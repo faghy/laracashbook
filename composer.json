@@ -1,0 +1,84 @@
+{
+    "name": "faghy/laracashbook",
+    "type": "project",
+    "description": "A simple Laravel cash book: track income and expenses for several entities, with categories, filters, CSV export, trash and a summary dashboard.",
+    "keywords": [
+        "laravel",
+        "cashbook",
+        "cash-book",
+        "ledger",
+        "bookkeeping",
+        "budget",
+        "expenses",
+        "income",
+        "starter-kit"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/faghy/laracashbook",
+    "support": {
+        "issues": "https://github.com/faghy/laracashbook/issues",
+        "source": "https://github.com/faghy/laracashbook"
+    },
+    "require": {
+        "php": "^8.2",
+        "andreaselia/laravel-api-to-postman": "^v2.0.3",
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/framework": "^v12.38.1",
+        "laravel/sanctum": "^v4.0.5",
+        "laravel/tinker": "^v2.7.3"
+    },
+    "require-dev": {
+        "barryvdh/laravel-debugbar": "^v3.15.4",
+        "barryvdh/laravel-ide-helper": "^v3.5.4",
+        "fakerphp/faker": "^v1.24.1",
+        "laravel/breeze": "^v2.3.8",
+        "laravel/pint": "^v1.25.1",
+        "laravel/sail": "^v1.48.0",
+        "mockery/mockery": "^1.6.12",
+        "nunomaduro/collision": "^v8.8.2",
+        "phpunit/phpunit": "^11.5.44",
+        "spatie/laravel-ignition": "^2.9.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
