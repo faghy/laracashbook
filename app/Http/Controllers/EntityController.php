@@ -14,11 +14,11 @@ class EntityController extends Controller
 
         // L'utente può selezionare solo le entità a cui è associato
         if (! $request->user()->hasEntity($selectedEntityId)) {
-            abort(403, 'Non sei autorizzato a selezionare questa entità.');
+            abort(403, __('You are not allowed to select this entity.'));
         }
 
         session(['selected_entity_id' => $selectedEntityId]);
 
-        return redirect()->back()->with('success', 'Entità selezionata con successo.');
+        return redirect()->back()->with('success', __('Entity selected.'));
     }
 }

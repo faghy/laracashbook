@@ -22,7 +22,7 @@ class InitializeSelectedEntity
             $associatedEntityIds = $user->entityIds();
 
             if (empty($associatedEntityIds)) {
-                abort(403, 'Nessuna entità associata al tuo utente.');
+                abort(403, __('Your user is not linked to any entity.'));
             }
 
             // Se in sessione non c'è un'entità valida (es. dopo il login), usa quella predefinita dell'utente

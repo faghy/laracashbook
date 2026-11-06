@@ -79,11 +79,11 @@ class MovimentoController extends Controller
 
         return [
             'label' => match (true) {
-                $date->isToday() => 'Oggi',
-                $date->isYesterday() => 'Ieri',
-                default => ucfirst($date->locale('it')->isoFormat('dddd')),
+                $date->isToday() => __('Today'),
+                $date->isYesterday() => __('Yesterday'),
+                default => ucfirst($date->locale(app()->getLocale())->isoFormat('dddd')),
             },
-            'date' => $date->locale('it')->isoFormat('D MMMM YYYY'),
+            'date' => $date->locale(app()->getLocale())->isoFormat('LL'),
             'entrate' => (float) $sums->entrate,
             'uscite' => (float) $sums->uscite,
             'saldo' => (float) $sums->entrate - (float) $sums->uscite,
@@ -98,7 +98,8 @@ class MovimentoController extends Controller
     }
 
     /**
-     * Esporta in CSV (compatibile con Excel in italiano) i movimenti filtrati.
+     * Esporta in CSV i movimenti filtrati. In italiano usa il formato di Excel italiano
+     * (separatore ";" e virgola decimale), nelle altre lingue "," e punto decimale.
      */
     public function export(Request $request)
     {
@@ -106,28 +107,31 @@ class MovimentoController extends Controller
 
         $filters = $this->validatedFilters($request);
         $entity = Entity::find(session('selected_entity_id'));
-        $filename = 'movimenti-'.str($entity->name ?? 'entita')->slug().'-'.now()->format('Y-m-d').'.csv';
+        $filename = str(__('movements'))->slug().'-'.str($entity->name ?? 'entity')->slug().'-'.now()->format('Y-m-d').'.csv';
+        $italian = app()->getLocale() === 'it';
+        $separator = $italian ? ';' : ',';
+        $decimal = $italian ? ',' : '.';
 
         $query = Movimento::forSelectedEntity()->filter($filters)
             ->with('categorie')
             ->orderBy('data_movimento')
             ->orderBy('id');
 
-        return response()->streamDownload(function () use ($query) {
+        return response()->streamDownload(function () use ($query, $separator, $decimal) {
             $out = fopen('php://output', 'w');
             // BOM per far riconoscere a Excel la codifica UTF-8
             fwrite($out, "\xEF\xBB\xBF");
-            fputcsv($out, ['Data', 'Tipo', 'Categoria', 'Descrizione', 'Importo', 'Estero senza IVA'], ';');
+            fputcsv($out, [__('Date'), __('Type'), __('Category'), __('Description'), __('Amount'), __('Foreign, VAT exempt')], $separator);
 
             foreach ($query->lazy() as $mov) {
                 fputcsv($out, [
                     $mov->data_movimento->format('d/m/Y'),
-                    $mov->entratauscita ? 'Entrata' : 'Uscita',
+                    $mov->entratauscita ? ucfirst(__('income')) : ucfirst(__('expense')),
                     optional($mov->categorie)->descriz_cat,
                     $mov->descrizione,
-                    number_format((float) $mov->importo, 2, ',', ''),
-                    $mov->estero_senza_iva ? 'Sì' : 'No',
-                ], ';');
+                    number_format((float) $mov->importo, 2, $decimal, ''),
+                    $mov->estero_senza_iva ? __('Yes') : __('No'),
+                ], $separator);
             }
 
             fclose($out);
@@ -159,7 +163,7 @@ class MovimentoController extends Controller
             'estero_senza_iva' => $request->boolean('estero_senza_iva'),
         ]);
 
-        return redirect()->route('movimenti.index')->with('status', 'Movimento creato con successo!');
+        return redirect()->route('movimenti.index')->with('status', __('Movement created.'));
     }
 
     public function edit($id)
@@ -203,7 +207,7 @@ class MovimentoController extends Controller
             'estero_senza_iva' => $request->boolean('estero_senza_iva'),
         ]);
 
-        return redirect()->route('movimenti.index')->with('status', 'Movimento aggiornato con successo!');
+        return redirect()->route('movimenti.index')->with('status', __('Movement updated.'));
     }
 
     /**
@@ -216,7 +220,7 @@ class MovimentoController extends Controller
 
         $movimento->delete();
 
-        return redirect()->back()->with('status', 'Il movimento è stato spostato nel cestino.');
+        return redirect()->back()->with('status', __('The movement has been moved to the trash.'));
     }
 
     /**
@@ -244,7 +248,7 @@ class MovimentoController extends Controller
 
         $movimento->restore();
 
-        return redirect()->route('movimenti.cestino')->with('status', 'Il movimento è stato ripristinato.');
+        return redirect()->route('movimenti.cestino')->with('status', __('The movement has been restored.'));
     }
 
     public function forceDestroy($id)
@@ -254,7 +258,7 @@ class MovimentoController extends Controller
 
         $movimento->forceDelete();
 
-        return redirect()->route('movimenti.cestino')->with('status', 'Il movimento è stato eliminato definitivamente.');
+        return redirect()->route('movimenti.cestino')->with('status', __('The movement has been deleted for good.'));
     }
 
     /**

@@ -26,7 +26,7 @@ class InstallationTest extends TestCase
         $this->assertTrue(Movimento::where('estero_senza_iva', true)->exists());
 
         $this->post('/manual-login', ['email' => 'demo@example.com', 'password' => 'password'])->assertRedirect();
-        $this->get('/movimenti')->assertOk()->assertSee('Stipendio mensile');
+        $this->get('/movimenti')->assertOk()->assertSee('Stipendio mensile'); // APP_LOCALE=it nei test
     }
 
     public function test_create_user_command(): void

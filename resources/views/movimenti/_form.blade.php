@@ -10,7 +10,7 @@
 
 @if ($errors->any())
     <div class="bg-rose-50 border-l-4 border-rose-500 text-rose-900 px-4 py-3 rounded-lg mb-6" role="alert">
-        <strong class="font-bold">Ci sono stati alcuni problemi con i dati inseriti.</strong>
+        <strong class="font-bold">{{ __('There were some problems with the data you entered.') }}</strong>
         <ul class="mt-2 list-disc list-inside">
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
@@ -21,25 +21,25 @@
 
 <div class="space-y-6" x-data>
     <fieldset>
-        <legend class="field-label">Tipo</legend>
+        <legend class="field-label">{{ __('Type') }}</legend>
         <div class="grid grid-cols-2 gap-3">
             <label class="cursor-pointer">
                 <input type="radio" id="IN" name="entratauscita" value="1" class="peer sr-only" @checked($tipo === '1')>
                 <span class="block text-center py-3 rounded-lg border-2 border-slate-300 text-lg font-semibold text-slate-600 hover:border-slate-400
                              peer-checked:border-emerald-600 peer-checked:bg-emerald-50 peer-checked:text-emerald-800
-                             peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-300">+ Entrata</span>
+                             peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-300">{{ __('+ Income') }}</span>
             </label>
             <label class="cursor-pointer">
                 <input type="radio" id="OUT" name="entratauscita" value="0" class="peer sr-only" @checked($tipo === '0')>
                 <span class="block text-center py-3 rounded-lg border-2 border-slate-300 text-lg font-semibold text-slate-600 hover:border-slate-400
                              peer-checked:border-rose-600 peer-checked:bg-rose-50 peer-checked:text-rose-800
-                             peer-focus-visible:ring-2 peer-focus-visible:ring-rose-300">− Uscita</span>
+                             peer-focus-visible:ring-2 peer-focus-visible:ring-rose-300">{{ __('− Expense') }}</span>
             </label>
         </div>
     </fieldset>
 
     <div>
-        <label for="select-categoria" class="field-label">Categoria</label>
+        <label for="select-categoria" class="field-label">{{ __('Category') }}</label>
         <div class="flex flex-col sm:flex-row gap-3">
             <select name="categoria" id="select-categoria" class="w-full sm:flex-1" required
                     @unless ($movimento) @change="$refs.estero.checked = $event.target.selectedOptions[0].dataset.estero === '1'" @endunless>
@@ -49,21 +49,21 @@
             </select>
             @unless ($movimento)
                 <a href="{{ route('categoria.create', ['source' => 'movimenti.create']) }}"
-                   class="btn btn-secondary">+ Nuova categoria</a>
+                   class="btn btn-secondary">{{ __('+ New category') }}</a>
             @endunless
         </div>
     </div>
 
     <div>
-        <label for="descrizione" class="field-label">Descrizione</label>
+        <label for="descrizione" class="field-label">{{ __('Description') }}</label>
         <input class="w-full" id="descrizione" type="text" name="descrizione" maxlength="255" required
-               placeholder="Es. Spesa al supermercato"
+               placeholder="{{ __('E.g. Groceries') }}"
                value="{{ old('descrizione', $movimento?->descrizione) }}">
     </div>
 
     <div class="grid gap-6 sm:grid-cols-2">
         <div>
-            <label for="import" class="field-label">Importo</label>
+            <label for="import" class="field-label">{{ __('Amount') }}</label>
             <div class="relative">
                 <span class="absolute inset-y-0 left-3 flex items-center text-slate-500 pointer-events-none">€</span>
                 <input class="w-full pl-8 text-right text-lg" id="import" type="number" step="0.01" min="0" name="importo" required
@@ -73,7 +73,7 @@
         </div>
 
         <div>
-            <label for="data" class="field-label">Data</label>
+            <label for="data" class="field-label">{{ __('Date') }}</label>
             <input class="w-full text-lg" id="data" type="date" name="data" value="{{ $data }}">
         </div>
     </div>
@@ -83,13 +83,13 @@
         <input type="hidden" name="estero_senza_iva" value="0">
         <input type="checkbox" id="estero_senza_iva" name="estero_senza_iva" value="1" class="mt-0.5 size-5 accent-amber-600" x-ref="estero" @checked($estero)>
         <span>
-            <span class="block font-semibold">Movimento estero senza IVA</span>
-            <span class="block text-sm text-slate-600">Da spuntare per le operazioni con l'estero non soggette a IVA.</span>
+            <span class="block font-semibold">{{ __('Foreign movement, VAT exempt') }}</span>
+            <span class="block text-sm text-slate-600">{{ __('Tick it for transactions with foreign parties that are not subject to VAT.') }}</span>
         </span>
     </label>
 
     <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t border-slate-200">
-        <a class="btn btn-secondary text-lg" href="{{ route('movimenti.index') }}">Annulla</a>
-        <button class="btn btn-success text-lg px-8" type="submit">Salva</button>
+        <a class="btn btn-secondary text-lg" href="{{ route('movimenti.index') }}">{{ __('Cancel') }}</a>
+        <button class="btn btn-success text-lg px-8" type="submit">{{ __('Save') }}</button>
     </div>
 </div>

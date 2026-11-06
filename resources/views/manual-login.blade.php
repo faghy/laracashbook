@@ -1,6 +1,6 @@
 <x-guest-layout>
 
-    <h2 class="text-xl font-bold text-slate-900 mb-6">Accedi</h2>
+    <h2 class="text-xl font-bold text-slate-900 mb-6">{{ __('Sign in') }}</h2>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
@@ -30,7 +30,7 @@
         <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">
                 <input id="remember_me" type="checkbox" class="" name="remember">
-                <span class="ml-2 text-sm text-slate-600">Ricordami</span>
+                <span class="ml-2 text-sm text-slate-600">{{ __('Remember me') }}</span>
             </label>
         </div>
 
@@ -38,12 +38,12 @@
 {{--            <a class="basis-3 text-sm text-slate-600 hover:text-gray-900 rounded-md" href="register">Registrati</a>--}}
             @if (Route::has('password.request'))
                 <a class="underline text-sm text-slate-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Recupera password') }}
+                    {{ __('Forgot your password?') }}
                 </a>
             @endif
 
             <x-primary-button class=" ml-3">
-                Accedi
+                {{ __('Sign in') }}
             </x-primary-button>
         </div>
     </form>

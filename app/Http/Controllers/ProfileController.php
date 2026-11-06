@@ -69,7 +69,7 @@ class ProfileController extends Controller
             $request->session()->put('selected_entity_id', $user->default_entity_id);
         }
 
-        return Redirect::route('profile.edit')->with('status', 'Entità predefinita aggiornata.');
+        return Redirect::route('profile.edit')->with('status', __('Default entity updated.'));
     }
 
 

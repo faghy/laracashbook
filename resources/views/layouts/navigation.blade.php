@@ -1,11 +1,11 @@
 @php
     // Voci del menu, condivise tra versione desktop e mobile
     $links = [
-        ['route' => 'movimenti.index', 'label' => 'Movimenti', 'active' => 'movimenti.index'],
-        ['route' => 'movimenti.oggi', 'label' => 'Oggi', 'active' => null],
-        ['route' => 'movimenti.ieri', 'label' => 'Ieri', 'active' => null],
-        ['route' => 'categoria.index', 'label' => 'Categorie', 'active' => 'categoria.*'],
-        ['route' => 'movimenti.cestino', 'label' => 'Cestino', 'active' => 'movimenti.cestino'],
+        ['route' => 'movimenti.index', 'label' => __('Movements'), 'active' => 'movimenti.index'],
+        ['route' => 'movimenti.oggi', 'label' => __('Today'), 'active' => null],
+        ['route' => 'movimenti.ieri', 'label' => __('Yesterday'), 'active' => null],
+        ['route' => 'categoria.index', 'label' => __('Categories'), 'active' => 'categoria.*'],
+        ['route' => 'movimenti.cestino', 'label' => __('Trash'), 'active' => 'movimenti.cestino'],
     ];
     $linkClass = 'px-3 py-2 rounded-lg font-medium transition-colors';
     $activeClass = 'bg-white/20 text-white';
@@ -30,7 +30,7 @@
             </div>
 
             <div class="hidden lg:flex items-center gap-3">
-                <a href="{{ route('movimenti.create') }}" class="btn bg-white text-indigo-700 hover:bg-indigo-50 shadow-sm">+ Nuova operazione</a>
+                <a href="{{ route('movimenti.create') }}" class="btn bg-white text-indigo-700 hover:bg-indigo-50 shadow-sm">{{ __('+ New movement') }}</a>
 
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -48,7 +48,7 @@
                         </x-dropdown-link>
 
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profilo') }}
+                            {{ __('Profile') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -58,7 +58,7 @@
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                {{ __('Esci') }}
+                                {{ __('Log out') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -67,8 +67,8 @@
 
             <!-- Hamburger -->
             <div class="flex items-center gap-2 lg:hidden">
-                <a href="{{ route('movimenti.create') }}" class="btn btn-sm bg-white text-indigo-700">+ Nuova</a>
-                <button @click="open = ! open" aria-label="Menu" class="p-2 rounded-lg text-white hover:bg-white/10">
+                <a href="{{ route('movimenti.create') }}" class="btn btn-sm bg-white text-indigo-700">{{ __('+ New') }}</a>
+                <button @click="open = ! open" aria-label="{{ __('Menu') }}" class="p-2 rounded-lg text-white hover:bg-white/10">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -93,11 +93,11 @@
             <div class="px-3 text-sm text-indigo-200">{{ Auth::user()?->email }}</div>
 
             <div class="mt-2 flex flex-col gap-1">
-                <a href="{{ route('dashboard') }}" class="{{ $linkClass }} {{ request()->routeIs('dashboard') ? $activeClass : $idleClass }}">Dashboard</a>
-                <a href="{{ route('profile.edit') }}" class="{{ $linkClass }} {{ request()->routeIs('profile.edit') ? $activeClass : $idleClass }}">Profilo</a>
+                <a href="{{ route('dashboard') }}" class="{{ $linkClass }} {{ request()->routeIs('dashboard') ? $activeClass : $idleClass }}">{{ __('Dashboard') }}</a>
+                <a href="{{ route('profile.edit') }}" class="{{ $linkClass }} {{ request()->routeIs('profile.edit') ? $activeClass : $idleClass }}">{{ __('Profile') }}</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="w-full text-left {{ $linkClass }} {{ $idleClass }}">Esci</button>
+                    <button type="submit" class="w-full text-left {{ $linkClass }} {{ $idleClass }}">{{ __('Log out') }}</button>
                 </form>
             </div>
         </div>

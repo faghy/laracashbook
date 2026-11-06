@@ -172,7 +172,7 @@ class EntityIsolationTest extends TestCase
 
         $this->actingAs($this->user)
             ->post('/dashboard', ['password' => 'sbagliata'])
-            ->assertSessionHas('password_error', 'Password errata!');
+            ->assertSessionHas('password_error', 'Password errata.');
 
         $this->actingAs($this->user)
             ->post('/dashboard', ['password' => 'segreta'])

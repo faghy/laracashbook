@@ -27,7 +27,7 @@ class PasswordProtect
 
             // Nessuna password configurata: accesso negato invece di usare un valore di default
             if ($password === '') {
-                return back()->with('password_error', 'Accesso alla dashboard non configurato.');
+                return back()->with('password_error', __('Dashboard access is not configured.'));
             }
 
             if (hash_equals($password, $inputPassword)) {
@@ -39,7 +39,7 @@ class PasswordProtect
                 return redirect()->route('dashboard');
             } else {
                 // Password errata: torna al form con errore
-                return back()->with('password_error', 'Password errata!');
+                return back()->with('password_error', __('Wrong password.'));
             }
         }
 

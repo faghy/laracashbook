@@ -1,23 +1,26 @@
 # LaraCashbook
 
+**English** · [Italiano](README.it.md)
+
 A simple, self-hosted cash book built with Laravel. Record income and expenses for one or more
 entities (your household, your business, a client…), group them into categories and see where the
 money goes.
 
 ![Movements list](docs/screenshots/movements.png)
 
-> The user interface is in **Italian**. Pull requests adding translations are welcome.
+> The interface is available in **English** and **Italian** (`APP_LOCALE=en` or `it`). Pull requests adding more languages are welcome: copy `lang/it.json` to `lang/<code>.json` and translate it.
 
 ## Features
 
 - **Movements**: add, edit and delete income and expenses, with date, category and description.
 - **Filters**: free-text search, date range, category, income/expense, plus shortcuts for today and yesterday.
-- **CSV export** of the filtered movements, ready for Excel (`;` separator, decimal comma).
+- **CSV export** of the filtered movements, ready for Excel (in Italian: `;` separator and decimal comma).
 - **Trash**: deleted movements can be restored or removed for good.
 - **Categories** per entity. A category can be marked as *foreign, VAT exempt*, and new movements in it get the same flag by default.
 - **Multiple entities**: each user only sees the entities they belong to and can pick a default one, selected at every login.
 - **Dashboard** behind an extra password: totals, period and category filters, monthly trend and per-category summary.
 - **Configurable logo** and application name.
+- **English and Italian** interface, demo data included.
 - Responsive layout (Tailwind CSS 4) that works well on phones.
 
 | Dashboard | New movement | Mobile |
@@ -80,7 +83,7 @@ Open http://127.0.0.1:8000 and sign in.
 ### Demo data
 
 To try the app with sample data instead (a demo user, two entities with their categories and about
-six months of movements):
+six months of movements, in the language set by `APP_LOCALE`):
 
 ```bash
 php artisan migrate --seed
@@ -103,6 +106,7 @@ php artisan db:seed --class=AdminUserSeeder
 | Variable | Purpose |
 |---|---|
 | `APP_NAME` | Name shown in the navigation bar, on the sign-in page and in the browser tab. |
+| `APP_LOCALE` | Interface language: `en` (default) or `it`. Amounts and the CSV format follow it. |
 | `CASHBOOK_LOGO_URL` | Logo shown next to the name: an absolute URL or a path in `public/` such as `/images/logo.svg`. Empty means no logo. The navigation bar is dark, so use a light version. |
 | `CASHBOOK_LOGO_ALT` | Alternative text for the logo. |
 | `PASSWORD_PROTECT` | Extra password for the dashboard. |
@@ -127,7 +131,7 @@ php artisan view:clear
 ## Tests
 
 The tests use a dedicated MySQL/MariaDB database called `laracashbook_test` (see `phpunit.xml`),
-which is emptied on every run. As a safeguard, they refuse to start if the database name does not
+which is emptied on every run. They run with the Italian interface; `LocaleTest` covers English. As a safeguard, they refuse to start if the database name does not
 end with `_test`.
 
 ```bash

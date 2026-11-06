@@ -71,17 +71,17 @@ class CatController extends Controller
             // Salva la categoria
             if ($categoria->save()) {
                 if ($request->input('source') === 'movimenti.create') {
-                    return redirect()->route('movimenti.create')->with('categoria_created', 'La categoria è stata creata con successo.');
+                    return redirect()->route('movimenti.create')->with('categoria_created', __('The category has been created.'));
                 } else {
-                    return redirect()->route('categoria.index')->with('categoria_created', 'La categoria è stata creata con successo.');
+                    return redirect()->route('categoria.index')->with('categoria_created', __('The category has been created.'));
                 }
             } else {
                 // Gestisci il caso in cui il salvataggio fallisce
-                return redirect()->route('categoria.index')->with('categoria_created_error', 'Si è verificato un errore durante il salvataggio della categoria.');
+                return redirect()->route('categoria.index')->with('categoria_created_error', __('An error occurred while saving the category.'));
             }
         } catch (\Exception $e) {
             // Gestisci eventuali eccezioni o errori
-            return redirect()->route('categoria.index')->with('categoria_created_error', 'Si è verificato un errore durante il salvataggio della categoria.');
+            return redirect()->route('categoria.index')->with('categoria_created_error', __('An error occurred while saving the category.'));
         }
     }
 
@@ -126,7 +126,7 @@ class CatController extends Controller
         $cat->update(['descriz_cat' => $validatedData['descriz']]);
         $cat->forceFill(['estero_senza_iva' => $request->boolean('estero_senza_iva')])->save();
 
-        return redirect()->route('categoria.index')->with('status', 'La categoria è stata aggiornata con successo!');
+        return redirect()->route('categoria.index')->with('status', __('The category has been updated.'));
     }
 
     /**
@@ -142,16 +142,16 @@ class CatController extends Controller
         try {
             // Verifica se ci sono movimenti collegati alla categoria
             if ($categoria->movimenti()->withTrashed()->exists()) {
-                return redirect('/categoria')->with('error', 'Impossibile eliminare la categoria. È collegata a movimenti (anche nel cestino).');
+                return redirect('/categoria')->with('error', __('The category cannot be deleted: it has movements (including in the trash).'));
             }
 
             $categoria->delete();
 
             // Reindirizza con un messaggio di successo
-            return redirect('/categoria')->with('status', 'La categoria è stata eliminata con successo!');
+            return redirect('/categoria')->with('status', __('The category has been deleted.'));
         } catch (\Exception $e) {
             // Gestisci eventuali eccezioni o errori
-            return redirect('/categoria')->with('error', 'Si è verificato un errore durante l eliminazione della categoria');
+            return redirect('/categoria')->with('error', __('An error occurred while deleting the category.'));
         }
     }
 }
