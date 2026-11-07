@@ -1,6 +1,14 @@
+<p align="center"><img src="docs/logo/logo-wide.png" alt="LaraCashbook" width="420"></p>
+
 # LaraCashbook
 
 [English](README.md) · **Italiano**
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-777bb4.svg)](https://www.php.net/)
+[![Laravel 12](https://img.shields.io/badge/Laravel-12-ff2d20.svg)](https://laravel.com/)
+
+**Sito:** [laracashbook.it](https://laracashbook.it) · **Demo online:** [demo.laracashbook.it](https://demo.laracashbook.it) (`demo@example.com` / `password`, password della dashboard `demo`)
 
 Un libro cassa semplice, da installare sul proprio server, fatto con Laravel. Registra entrate e
 uscite di una o più entità (la famiglia, l'attività, un cliente…), raggruppale per categoria e
@@ -146,6 +154,11 @@ DB_HOST=127.0.0.1 DB_PORT=3306 DB_USERNAME=utente DB_PASSWORD=segreta php artisa
 ```
 
 Stile del codice: `vendor/bin/pint`.
+
+## Contribuire
+
+Segnalazioni e pull request sono benvenute su [GitHub](https://github.com/faghy/laracashbook/issues).
+Prima di aprire una pull request lancia `php artisan test` e `vendor/bin/pint`.
 
 ## Licenza
 

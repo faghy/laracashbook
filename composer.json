@@ -14,7 +14,13 @@
         "starter-kit"
     ],
     "license": "MIT",
-    "homepage": "https://github.com/faghy/laracashbook",
+    "homepage": "https://laracashbook.it",
+    "authors": [
+        {
+            "name": "Serafino Christian",
+            "homepage": "https://github.com/faghy"
+        }
+    ],
     "support": {
         "issues": "https://github.com/faghy/laracashbook/issues",
         "source": "https://github.com/faghy/laracashbook"

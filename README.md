@@ -1,6 +1,14 @@
+<p align="center"><img src="docs/logo/logo-wide.png" alt="LaraCashbook" width="420"></p>
+
 # LaraCashbook
 
 **English** · [Italiano](README.it.md)
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-777bb4.svg)](https://www.php.net/)
+[![Laravel 12](https://img.shields.io/badge/Laravel-12-ff2d20.svg)](https://laravel.com/)
+
+**Website:** [laracashbook.it](https://laracashbook.it) · **Live demo:** [demo.laracashbook.it](https://demo.laracashbook.it) (`demo@example.com` / `password`, dashboard password `demo`)
 
 A simple, self-hosted cash book built with Laravel. Record income and expenses for one or more
 entities (your household, your business, a client…), group them into categories and see where the
@@ -143,6 +151,11 @@ DB_HOST=127.0.0.1 DB_PORT=3306 DB_USERNAME=user DB_PASSWORD=secret php artisan t
 ```
 
 Code style: `vendor/bin/pint`.
+
+## Contributing
+
+Bug reports and pull requests are welcome on [GitHub](https://github.com/faghy/laracashbook/issues).
+Please run `php artisan test` and `vendor/bin/pint` before opening a pull request.
 
 ## License
 
