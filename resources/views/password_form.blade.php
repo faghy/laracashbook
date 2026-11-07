@@ -11,6 +11,9 @@
 
         <label for="password" class="block font-bold text-xl">{{ __('Enter the password') }}</label>
         <input class="w-full text-center" type="password" name="password" id="password" required autofocus>
+        @if (config('app.demo') && config('app.dashboard_password'))
+            <p class="text-sm text-slate-600">{{ __('Demo password') }}: <code>{{ config('app.dashboard_password') }}</code></p>
+        @endif
 
         <div class="flex justify-center gap-3">
             <button type="submit" class="btn btn-primary px-8">{{ __('Submit') }}</button>

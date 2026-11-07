@@ -11,22 +11,26 @@
             </div>
         </div>
 
-        <div class="card p-4 sm:p-8">
-            <div class="max-w-xl">
-                @include('profile.partials.update-profile-information-form')
+        @if (config('app.demo'))
+            <div class="card p-4 sm:p-8 text-slate-600">{{ __('In the demo the name, email and password of the account cannot be changed.') }}</div>
+        @else
+            <div class="card p-4 sm:p-8">
+                <div class="max-w-xl">
+                    @include('profile.partials.update-profile-information-form')
+                </div>
             </div>
-        </div>
 
-        <div class="card p-4 sm:p-8">
-            <div class="max-w-xl">
-                @include('profile.partials.update-password-form')
+            <div class="card p-4 sm:p-8">
+                <div class="max-w-xl">
+                    @include('profile.partials.update-password-form')
+                </div>
             </div>
-        </div>
 
-        <div class="card p-4 sm:p-8">
-            <div class="max-w-xl">
-                @include('profile.partials.delete-user-form')
+            <div class="card p-4 sm:p-8">
+                <div class="max-w-xl">
+                    @include('profile.partials.delete-user-form')
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 </x-app-layout>

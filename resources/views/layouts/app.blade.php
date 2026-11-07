@@ -17,6 +17,12 @@
         <div class="min-h-screen">
             @include('layouts.navigation')
 
+            @if (config('app.demo'))
+                <div class="bg-indigo-600 text-white text-sm text-center px-4 py-1.5">
+                    {{ __('This is a demo: data are reset every night.') }}
+                </div>
+            @endif
+
             <!-- Page Heading -->
             @if (isset($header))
                 <header class="max-w-7xl mx-auto pt-6 pb-2 px-4 sm:px-6 lg:px-8 flex flex-wrap items-center gap-x-4 gap-y-3">

@@ -55,6 +55,13 @@ return [
     'dashboard_password' => env('PASSWORD_PROTECT'),
 
     /*
+    | Demo mode: shows the demo credentials and blocks changes to the account
+    | (profile, password, account deletion, password reset).
+    */
+
+    'demo' => (bool) env('DEMO_MODE', false),
+
+    /*
     |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------

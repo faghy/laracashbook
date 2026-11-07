@@ -110,6 +110,7 @@ php artisan db:seed --class=AdminUserSeeder
 | `CASHBOOK_LOGO_URL` | Logo shown next to the name: an absolute URL or a path in `public/` such as `/images/logo.svg`. Empty means no logo. The navigation bar is dark, so use a light version. |
 | `CASHBOOK_LOGO_ALT` | Alternative text for the logo. |
 | `PASSWORD_PROTECT` | Extra password for the dashboard. |
+| `DEMO_MODE` | `true` for a public demo: shows the demo credentials (`demo@example.com` / `password` and the dashboard password) and blocks account changes and password resets. |
 | `ADMIN_SEED_NAME`, `ADMIN_SEED_EMAIL`, `ADMIN_SEED_PASSWORD` | Account created by `AdminUserSeeder`. |
 
 Users have a role (`stagista`, `operatore` or `responsabile`), set with `--role` on
