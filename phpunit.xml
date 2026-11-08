@@ -22,6 +22,7 @@
         <!-- I test esistenti verificano i testi italiani; LocaleTest controlla l'inglese -->
         <env name="APP_LOCALE" value="it"/>
         <env name="DEMO_MODE" value="false" force="true"/>
+        <env name="TRUSTED_PROXIES" value="" force="true"/>
         <env name="PASSWORD_PROTECT" value="" force="true"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_DRIVER" value="array"/>

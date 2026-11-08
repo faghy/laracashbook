@@ -120,6 +120,7 @@ php artisan db:seed --class=AdminUserSeeder
 | `CASHBOOK_LOGO_ALT` | Alternative text for the logo (empty by default, since the name is shown next to it). |
 | `PASSWORD_PROTECT` | Extra password for the dashboard. |
 | `DEMO_MODE` | `true` for a public demo: shows the demo credentials (`demo@example.com` / `password` and the dashboard password) and blocks account changes and password resets. |
+| `TRUSTED_PROXIES` | IP addresses of the reverse proxies in front of the app (comma separated, CIDR allowed), e.g. `10.0.0.200`. Needed behind a proxy or load balancer, otherwise every visitor has the proxy's IP and shares the same login limits. The proxy must send `X-Forwarded-For` with the visitor's IP. |
 | `ADMIN_SEED_NAME`, `ADMIN_SEED_EMAIL`, `ADMIN_SEED_PASSWORD` | Account created by `AdminUserSeeder`. |
 
 Users have a role (`stagista`, `operatore` or `responsabile`), set with `--role` on
