@@ -61,39 +61,13 @@ class ProfileTest extends TestCase
         $this->assertNotNull($user->refresh()->email_verified_at);
     }
 
-    public function test_user_can_delete_their_account()
+    public function test_account_cannot_be_deleted_from_the_profile()
     {
+        // Gli utenti si disattivano dalla gestione utenti: eliminarli cancellerebbe i loro movimenti
         $user = User::factory()->create();
 
-        $response = $this
-            ->actingAs($user)
-            ->delete('/profile', [
-                'password' => 'password',
-            ]);
-
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect('/');
-
-        $this->assertGuest();
-        $this->assertNull($user->fresh());
-    }
-
-    public function test_correct_password_must_be_provided_to_delete_account()
-    {
-        $user = User::factory()->create();
-
-        $response = $this
-            ->actingAs($user)
-            ->from('/profile')
-            ->delete('/profile', [
-                'password' => 'wrong-password',
-            ]);
-
-        $response
-            ->assertSessionHasErrorsIn('userDeletion', 'password')
-            ->assertRedirect('/profile');
-
+        $this->actingAs($user)->get('/profile')->assertOk()->assertDontSee('Delete Account')->assertDontSee('Elimina account');
+        $this->actingAs($user)->delete('/profile', ['password' => 'password'])->assertStatus(405);
         $this->assertNotNull($user->fresh());
     }
 }

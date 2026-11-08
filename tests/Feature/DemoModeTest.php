@@ -54,17 +54,6 @@ class DemoModeTest extends TestCase
         $this->assertSame($hash, $user->fresh()->password);
     }
 
-    public function test_account_cannot_be_deleted_in_demo()
-    {
-        $user = User::factory()->create();
-
-        $this->actingAs($user)->from('/profile')
-            ->delete('/profile', ['password' => 'password'])
-            ->assertSessionHas('error');
-
-        $this->assertNotNull($user->fresh());
-    }
-
     public function test_password_reset_link_is_blocked_in_demo()
     {
         $user = User::factory()->create();

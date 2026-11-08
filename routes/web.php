@@ -35,7 +35,6 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update')->middleware('not_in_demo');
     Route::patch('/profile/entita-predefinita', [ProfileController::class, 'updateDefaultEntity'])->name('profile.default-entity');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy')->middleware('not_in_demo');
 
     // --- Gruppo di Rotte che necessitano dell'entità inizializzata ---
     // Queste rotte usano anche il middleware InitializeSelectedEntity

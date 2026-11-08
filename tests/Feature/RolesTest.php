@@ -236,4 +236,17 @@ class RolesTest extends TestCase
         $this->assertSame('operatore', $operatore->fresh()->role);
         $this->assertSame('operatore', DB::table('users')->insertGetId(['name' => 'x', 'email' => 'x@example.com', 'password' => 'x']) ? User::where('email', 'x@example.com')->value('role') : null);
     }
+
+    public function test_user_with_movements_cannot_be_deleted(): void
+    {
+        $op = $this->user('operatore', [$this->casa]);
+        Movimento::create(['user_id' => $op->id, 'entity_id' => $this->casa->id, 'entratauscita' => 0, 'categoria' => $this->cat->cat_id, 'descrizione' => 'Pane', 'importo' => 3]);
+
+        $this->expectException(\Illuminate\Database\QueryException::class);
+        try {
+            $op->delete();
+        } finally {
+            $this->assertSame(1, Movimento::where('user_id', $op->id)->count());
+        }
+    }
 }
