@@ -7,6 +7,10 @@
 
         <title>{{ config('app.name', 'LaraCashbook') }}</title>
 
+        <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="32x32">
+        <link rel="icon" href="{{ asset('images/laracashbook-icon-192.png') }}" type="image/png" sizes="192x192">
+        <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap">
 

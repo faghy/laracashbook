@@ -56,13 +56,24 @@ class InstallationTest extends TestCase
         $this->seed(DemoSeeder::class);
         $user = User::firstOrFail();
 
+        // Predefinito: logo di LaraCashbook, anche nella pagina di accesso, e favicon
+        $this->assertSame('/images/laracashbook-logo.png', config('cashbook.logo_url'));
+        $this->assertFileExists(public_path('images/laracashbook-logo.png'));
+        $this->get('/manual-login')
+            ->assertSee('images/laracashbook-logo.png', false)
+            ->assertSee('favicon.ico', false);
+
         config(['app.name' => 'Il mio libro cassa']);
         $this->actingAs($user)->get('/movimenti')
             ->assertSee('Il mio libro cassa')
-            ->assertDontSee('<img class="h-8', false);
+            ->assertSee('images/laracashbook-logo.png', false);
+
+        // "none": solo il nome
+        config(['cashbook.logo_url' => null]);
+        $this->actingAs($user)->get('/movimenti')->assertDontSee('<img class="h-8', false);
 
         config(['cashbook.logo_url' => '/images/logo.svg', 'cashbook.logo_alt' => 'Logo']);
         $this->actingAs($user)->get('/movimenti')
-            ->assertSee('src="/images/logo.svg"', false);
+            ->assertSee('/images/logo.svg"', false);
     }
 }

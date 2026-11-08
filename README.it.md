@@ -28,7 +28,7 @@ guarda dove vanno i soldi.
 - **Categorie** per entità, con le impostazioni predefinite dei nuovi movimenti: entrata o uscita e flag *estero senza IVA*.
 - **Più entità**: ogni utente vede solo le entità a cui è associato e può sceglierne una predefinita, selezionata a ogni accesso.
 - **Dashboard** protetta da una password aggiuntiva: totali, filtri per periodo e categorie, andamento mensile e riepilogo per categoria.
-- **Logo** e nome dell'applicazione configurabili.
+- **Logo** e nome dell'applicazione configurabili; di base logo e favicon di LaraCashbook.
 - **Interfaccia in italiano e in inglese**, con dati di esempio in entrambe le lingue.
 - Layout responsive (Tailwind CSS 4), comodo anche da telefono.
 
@@ -117,8 +117,8 @@ php artisan db:seed --class=AdminUserSeeder
 |---|---|
 | `APP_NAME` | Nome mostrato nella barra di navigazione, nella pagina di accesso e nella scheda del browser. |
 | `APP_LOCALE` | Lingua dell'interfaccia: `en` (predefinita) o `it`. Il formato degli importi e del CSV la segue. |
-| `CASHBOOK_LOGO_URL` | Logo accanto al nome: un URL completo o un percorso dentro `public/`, ad esempio `/images/logo.svg`. Vuoto = nessun logo. La barra di navigazione è scura: usa una versione chiara. |
-| `CASHBOOK_LOGO_ALT` | Testo alternativo del logo. |
+| `CASHBOOK_LOGO_URL` | Logo accanto al nome, nella barra di navigazione e nella pagina di accesso: un URL completo o un percorso dentro `public/`, ad esempio `/images/logo.svg`. Vuoto = logo di LaraCashbook, `none` = nessun logo. La barra di navigazione è scura: usa una versione chiara. |
+| `CASHBOOK_LOGO_ALT` | Testo alternativo del logo (vuoto di base, perché accanto c'è già il nome). |
 | `PASSWORD_PROTECT` | Password aggiuntiva della dashboard. |
 | `DEMO_MODE` | `true` per una demo pubblica: mostra le credenziali di prova (`demo@example.com` / `password` e la password della dashboard) e blocca le modifiche all'account e il recupero password. |
 | `ADMIN_SEED_NAME`, `ADMIN_SEED_EMAIL`, `ADMIN_SEED_PASSWORD` | Account creato da `AdminUserSeeder`. |

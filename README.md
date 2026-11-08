@@ -27,7 +27,7 @@ money goes.
 - **Categories** per entity, with defaults for new movements: income or expense, and the *foreign, VAT exempt* flag.
 - **Multiple entities**: each user only sees the entities they belong to and can pick a default one, selected at every login.
 - **Dashboard** behind an extra password: totals, period and category filters, monthly trend and per-category summary.
-- **Configurable logo** and application name.
+- **Configurable logo** and application name; LaraCashbook logo and favicon by default.
 - **English and Italian** interface, demo data included.
 - Responsive layout (Tailwind CSS 4) that works well on phones.
 
@@ -115,8 +115,8 @@ php artisan db:seed --class=AdminUserSeeder
 |---|---|
 | `APP_NAME` | Name shown in the navigation bar, on the sign-in page and in the browser tab. |
 | `APP_LOCALE` | Interface language: `en` (default) or `it`. Amounts and the CSV format follow it. |
-| `CASHBOOK_LOGO_URL` | Logo shown next to the name: an absolute URL or a path in `public/` such as `/images/logo.svg`. Empty means no logo. The navigation bar is dark, so use a light version. |
-| `CASHBOOK_LOGO_ALT` | Alternative text for the logo. |
+| `CASHBOOK_LOGO_URL` | Logo shown next to the name in the navigation bar and on the sign-in page: an absolute URL or a path in `public/` such as `/images/logo.svg`. Empty means the LaraCashbook logo, `none` means no logo. The navigation bar is dark, so use a light version. |
+| `CASHBOOK_LOGO_ALT` | Alternative text for the logo (empty by default, since the name is shown next to it). |
 | `PASSWORD_PROTECT` | Extra password for the dashboard. |
 | `DEMO_MODE` | `true` for a public demo: shows the demo credentials (`demo@example.com` / `password` and the dashboard password) and blocks account changes and password resets. |
 | `ADMIN_SEED_NAME`, `ADMIN_SEED_EMAIL`, `ADMIN_SEED_PASSWORD` | Account created by `AdminUserSeeder`. |
