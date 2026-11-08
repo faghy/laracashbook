@@ -5,8 +5,8 @@
 [English](README.md) · **Italiano**
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-777bb4.svg)](https://www.php.net/)
-[![Laravel 12](https://img.shields.io/badge/Laravel-12-ff2d20.svg)](https://laravel.com/)
+[![PHP 8.3+](https://img.shields.io/badge/PHP-8.3%2B-777bb4.svg)](https://www.php.net/)
+[![Laravel 13](https://img.shields.io/badge/Laravel-13-ff2d20.svg)](https://laravel.com/)
 
 **Sito:** [laracashbook.it](https://laracashbook.it) · **Demo online:** [demo.laracashbook.it](https://demo.laracashbook.it) (`demo@example.com` / `password`, password della dashboard `demo`)
 
@@ -38,7 +38,7 @@ guarda dove vanno i soldi.
 
 ## Requisiti
 
-- PHP 8.2 o superiore, Composer
+- PHP 8.3 o superiore, Composer
 - MySQL o MariaDB
 - Node.js 20.19+ e npm, per compilare gli asset
 
