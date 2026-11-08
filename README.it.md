@@ -30,6 +30,7 @@ guarda dove vanno i soldi.
 - **Dashboard** protetta da una password aggiuntiva: totali, filtri per periodo e categorie, andamento mensile e riepilogo per categoria.
 - **Logo** e nome dell'applicazione configurabili; di base logo e favicon di LaraCashbook.
 - **Interfaccia in italiano e in inglese**, con dati di esempio in entrambe le lingue.
+- **Sicurezza**: accesso limitato per email e per IP, reset della password che non rivela le email registrate, intestazioni di sicurezza (HSTS, protezione da iframe e dal riconoscimento dei tipi).
 - Layout responsive (Tailwind CSS 4), comodo anche da telefono.
 
 | Dashboard | Nuovo movimento | Telefono |

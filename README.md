@@ -29,6 +29,7 @@ money goes.
 - **Dashboard** behind an extra password: totals, period and category filters, monthly trend and per-category summary.
 - **Configurable logo** and application name; LaraCashbook logo and favicon by default.
 - **English and Italian** interface, demo data included.
+- **Security**: sign-in limited per email and per IP, password reset that does not reveal registered emails, security headers (HSTS, frame and content-type protection).
 - Responsive layout (Tailwind CSS 4) that works well on phones.
 
 | Dashboard | New movement | Mobile |

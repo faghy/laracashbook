@@ -20,8 +20,9 @@ use Illuminate\Support\Facades\Redirect; // Necessario per Redirect::to
 // --- Rotte Pubbliche / Guest (non richiedono autenticazione) ---
 Route::get('manual-login', [ProfileController::class, 'getInfo'])
     ->name('manual.login')->middleware('guest');
+// Oltre al limite per email (LoginRequest), al massimo 10 tentativi al minuto per indirizzo IP
 Route::post('manual-login', [ProfileController::class, 'manualLogin'])
-    ->name('manual.login.post')->middleware('guest');
+    ->name('manual.login.post')->middleware(['guest', 'throttle:10,1']);
 
 // Includi le rotte di autenticazione standard di Laravel (login, register, reset password, etc.)
 require __DIR__.'/auth.php';
