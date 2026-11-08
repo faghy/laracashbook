@@ -156,6 +156,55 @@ class MovimentiFeaturesTest extends TestCase
         $this->assertDoesNotMatchRegularExpression('/id="estero_senza_iva"[^>]*checked/', $html);
     }
 
+    public function test_category_presets_type_on_new_movements(): void
+    {
+        // "Affitto" viene prima di "Spesa" e "Stipendio", quindi è la categoria proposta
+        $this->actingAs($this->user)->withSession(['selected_entity_id' => $this->entity->id])
+            ->post('/categoria', ['descriz_cat' => 'Affitto', 'tipo_predefinito' => '0'])
+            ->assertRedirect(route('categoria.index'));
+        $affitto = Cat::where('descriz_cat', 'Affitto')->firstOrFail();
+        $this->assertSame(0, $affitto->tipo_predefinito);
+
+        $this->actingAs($this->user)->get('/categoria')->assertSeeInOrder(['Affitto', 'Uscita']);
+
+        $html = $this->actingAs($this->user)->get(route('movimenti.create'))->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('/id="OUT"[^>]*checked/', $html);
+        $this->assertDoesNotMatchRegularExpression('/id="IN"[^>]*checked/', $html);
+        $this->assertStringContainsString('data-tipo="0"', $html);
+
+        // Entrata predefinita
+        $this->actingAs($this->user)->patch("/categoria/{$affitto->cat_id}", ['descriz' => 'Affitto', 'tipo_predefinito' => '1']);
+        $this->assertSame(1, $affitto->fresh()->tipo_predefinito);
+        $html = $this->actingAs($this->user)->get(route('movimenti.create'))->getContent();
+        $this->assertMatchesRegularExpression('/id="IN"[^>]*checked/', $html);
+
+        // Nessuna impostazione: si torna a "Entrata" come prima
+        $this->actingAs($this->user)->patch("/categoria/{$affitto->cat_id}", ['descriz' => 'Affitto', 'tipo_predefinito' => '']);
+        $this->assertNull($affitto->fresh()->tipo_predefinito);
+
+        // Valori non validi rifiutati
+        $this->actingAs($this->user)->patch("/categoria/{$affitto->cat_id}", ['descriz' => 'Affitto', 'tipo_predefinito' => '5'])
+            ->assertSessionHasErrors('tipo_predefinito');
+
+        // In modifica conta solo il tipo del movimento
+        $this->actingAs($this->user)->patch("/categoria/{$affitto->cat_id}", ['descriz' => 'Affitto', 'tipo_predefinito' => '0']);
+        $mov = $this->makeMov('Rimborso', 1, 10, $affitto, '2026-03-01');
+        $html = $this->actingAs($this->user)->get(route('movimenti.edit', $mov->id))->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('/id="IN"[^>]*checked/', $html);
+    }
+
+    public function test_migration_sets_expense_on_existing_estero_categories(): void
+    {
+        $migration = require database_path('migrations/2026_11_08_000000_add_tipo_predefinito_to_categorie_table.php');
+        $migration->down();
+        $this->spesa->forceFill(['estero_senza_iva' => true])->save();
+
+        $migration->up();
+
+        $this->assertSame(0, $this->spesa->fresh()->tipo_predefinito);
+        $this->assertNull($this->stipendio->fresh()->tipo_predefinito);
+    }
+
     public function test_export_csv_respects_filters(): void
     {
         $response = $this->actingAs($this->user)->get('/movimenti/export?dal=2026-03-01&al=2026-03-31');

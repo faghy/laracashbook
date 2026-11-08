@@ -16,6 +16,17 @@
             <x-input-error :messages="$errors->get('descriz_cat')" class="mt-2" />
         </div>
 
+        <div>
+            <label for="tipo_predefinito" class="field-label">{{ __('Type proposed for new movements') }}</label>
+            @php $tipoPredefinito = (string) old('tipo_predefinito'); @endphp
+            <select name="tipo_predefinito" id="tipo_predefinito" class="w-full">
+                <option value="" @selected($tipoPredefinito === '')>{{ __('None') }}</option>
+                <option value="1" @selected($tipoPredefinito === '1')>{{ ucfirst(__('income')) }}</option>
+                <option value="0" @selected($tipoPredefinito === '0')>{{ ucfirst(__('expense')) }}</option>
+            </select>
+            <x-input-error :messages="$errors->get('tipo_predefinito')" class="mt-2" />
+        </div>
+
         <label for="estero_senza_iva" class="flex items-start gap-3 p-4 rounded-lg ring-1 ring-slate-200 bg-slate-50 cursor-pointer
                                          has-checked:ring-amber-400 has-checked:bg-amber-50">
             <input type="checkbox" id="estero_senza_iva" name="estero_senza_iva" value="1" class="mt-0.5 size-5 accent-amber-600" @checked(old('estero_senza_iva'))>

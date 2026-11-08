@@ -24,7 +24,7 @@ money goes.
 - **Filters**: free-text search, date range, category, income/expense, plus shortcuts for today and yesterday.
 - **CSV export** of the filtered movements, ready for Excel (in Italian: `;` separator and decimal comma).
 - **Trash**: deleted movements can be restored or removed for good.
-- **Categories** per entity. A category can be marked as *foreign, VAT exempt*, and new movements in it get the same flag by default.
+- **Categories** per entity, with defaults for new movements: income or expense, and the *foreign, VAT exempt* flag.
 - **Multiple entities**: each user only sees the entities they belong to and can pick a default one, selected at every login.
 - **Dashboard** behind an extra password: totals, period and category filters, monthly trend and per-category summary.
 - **Configurable logo** and application name.

@@ -55,6 +55,7 @@ class CatController extends Controller
                 'required', 'string', 'max:255',
                 Rule::unique('categorie', 'descriz_cat')->where('entity_id', $selectedEntityId),
             ],
+            'tipo_predefinito' => 'nullable|in:0,1',
         ], [
             'descriz_cat.required' => 'Inserisci il nome della categoria.',
             'descriz_cat.unique' => 'La categoria inserita già esiste.',
@@ -62,11 +63,12 @@ class CatController extends Controller
 
         try {
             // Crea una nuova categoria con i dati validati
-            $categoria = new Cat($validatedData);
+            $categoria = new Cat(['descriz_cat' => $validatedData['descriz_cat']]);
 
             // Assegna l'entity_id corrente
             $categoria->entity_id = $selectedEntityId;
             $categoria->estero_senza_iva = $request->boolean('estero_senza_iva');
+            $categoria->tipo_predefinito = $validatedData['tipo_predefinito'] ?? null;
 
             // Salva la categoria
             if ($categoria->save()) {
@@ -118,13 +120,17 @@ class CatController extends Controller
                     ->where('entity_id', $cat->entity_id)
                     ->ignore($cat->cat_id, 'cat_id'),
             ],
+            'tipo_predefinito' => 'nullable|in:0,1',
         ], [
             'descriz.required' => 'Inserisci il nome della categoria.',
             'descriz.unique' => 'La categoria inserita già esiste.',
         ]);
 
         $cat->update(['descriz_cat' => $validatedData['descriz']]);
-        $cat->forceFill(['estero_senza_iva' => $request->boolean('estero_senza_iva')])->save();
+        $cat->forceFill([
+            'estero_senza_iva' => $request->boolean('estero_senza_iva'),
+            'tipo_predefinito' => $validatedData['tipo_predefinito'] ?? null,
+        ])->save();
 
         return redirect()->route('categoria.index')->with('status', __('The category has been updated.'));
     }

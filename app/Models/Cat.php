@@ -27,6 +27,7 @@ class Cat extends Model
 
     protected $casts = [
         'estero_senza_iva' => 'boolean',
+        'tipo_predefinito' => 'integer',
     ];
 
     /**

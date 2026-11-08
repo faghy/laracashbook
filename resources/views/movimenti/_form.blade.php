@@ -1,10 +1,11 @@
 {{-- Campi comuni ai form di inserimento e modifica movimento. $movimento è null in inserimento. --}}
 @php
-    $tipo = (string) old('entratauscita', $movimento?->entratauscita ?? 1);
     $categoria = (int) old('categoria', $movimento?->categoria);
+    // In inserimento tipo e flag partono dalle impostazioni della categoria proposta
+    $catProposta = $cats->firstWhere('cat_id', $categoria) ?? $cats->first();
+    $tipo = (string) old('entratauscita', $movimento?->entratauscita ?? $catProposta?->tipo_predefinito ?? 1);
     $data = old('data', $movimento?->data_movimento?->toDateString() ?? now()->toDateString());
-    // In inserimento il flag parte dall'impostazione della categoria proposta
-    $catEstero = (bool) ($cats->firstWhere('cat_id', $categoria) ?? $cats->first())?->estero_senza_iva;
+    $catEstero = (bool) $catProposta?->estero_senza_iva;
     $estero = (bool) old('estero_senza_iva', $movimento ? $movimento->estero_senza_iva : $catEstero);
 @endphp
 
@@ -24,13 +25,13 @@
         <legend class="field-label">{{ __('Type') }}</legend>
         <div class="grid grid-cols-2 gap-3">
             <label class="cursor-pointer">
-                <input type="radio" id="IN" name="entratauscita" value="1" class="peer sr-only" @checked($tipo === '1')>
+                <input type="radio" id="IN" name="entratauscita" value="1" class="peer sr-only" x-ref="entrata" @checked($tipo === '1')>
                 <span class="block text-center py-3 rounded-lg border-2 border-slate-300 text-lg font-semibold text-slate-600 hover:border-slate-400
                              peer-checked:border-emerald-600 peer-checked:bg-emerald-50 peer-checked:text-emerald-800
                              peer-focus-visible:ring-2 peer-focus-visible:ring-emerald-300">{{ __('+ Income') }}</span>
             </label>
             <label class="cursor-pointer">
-                <input type="radio" id="OUT" name="entratauscita" value="0" class="peer sr-only" @checked($tipo === '0')>
+                <input type="radio" id="OUT" name="entratauscita" value="0" class="peer sr-only" x-ref="uscita" @checked($tipo === '0')>
                 <span class="block text-center py-3 rounded-lg border-2 border-slate-300 text-lg font-semibold text-slate-600 hover:border-slate-400
                              peer-checked:border-rose-600 peer-checked:bg-rose-50 peer-checked:text-rose-800
                              peer-focus-visible:ring-2 peer-focus-visible:ring-rose-300">{{ __('− Expense') }}</span>
@@ -42,9 +43,12 @@
         <label for="select-categoria" class="field-label">{{ __('Category') }}</label>
         <div class="flex flex-col sm:flex-row gap-3">
             <select name="categoria" id="select-categoria" class="w-full sm:flex-1" required
-                    @unless ($movimento) @change="$refs.estero.checked = $event.target.selectedOptions[0].dataset.estero === '1'" @endunless>
+                    @unless ($movimento) @change="const o = $event.target.selectedOptions[0].dataset;
+                        $refs.estero.checked = o.estero === '1';
+                        if (o.tipo === '1') $refs.entrata.checked = true;
+                        if (o.tipo === '0') $refs.uscita.checked = true" @endunless>
                 @foreach($cats as $cat)
-                    <option value="{{ $cat->cat_id }}" data-estero="{{ $cat->estero_senza_iva ? 1 : 0 }}" @selected($categoria === (int) $cat->cat_id)>{{ $cat->descriz_cat }}</option>
+                    <option value="{{ $cat->cat_id }}" data-estero="{{ $cat->estero_senza_iva ? 1 : 0 }}" data-tipo="{{ $cat->tipo_predefinito }}" @selected($categoria === (int) $cat->cat_id)>{{ $cat->descriz_cat }}</option>
                 @endforeach
             </select>
             @unless ($movimento)

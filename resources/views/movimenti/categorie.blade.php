@@ -18,6 +18,11 @@
                 <tr>
                     <td class="font-medium">
                         {{ $cat->descriz_cat }}
+                        @if ($cat->tipo_predefinito === 1)
+                            <span class="badge bg-emerald-100 text-emerald-800 ml-1" title="{{ __('Type proposed for new movements') }}">{{ ucfirst(__('income')) }}</span>
+                        @elseif ($cat->tipo_predefinito === 0)
+                            <span class="badge bg-rose-100 text-rose-800 ml-1" title="{{ __('Type proposed for new movements') }}">{{ ucfirst(__('expense')) }}</span>
+                        @endif
                         @if ($cat->estero_senza_iva)
                             <span class="badge bg-amber-100 text-amber-800 ml-1" title="{{ __('New movements are foreign and VAT exempt') }}">{{ __('Foreign, no VAT') }}</span>
                         @endif
