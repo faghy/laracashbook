@@ -28,15 +28,10 @@
                         @endif
                     </td>
                     <td>
-                        <form method="POST" action="{{ route('categoria.destroy', $cat->cat_id) }}" class="flex justify-end gap-1">
-                            @csrf
-                            @method('delete')
+                        <div class="flex justify-end gap-1">
                             <a href="{{ route('categoria.edit', $cat->cat_id) }}" class="btn btn-sm btn-secondary">{{ __('Edit') }}</a>
-                            <button type="submit"
-                                    data-confirm="{{ __('Do you really want to delete the category :name?', ['name' => $cat->descriz_cat]) }}"
-                                    onclick="return confirm(this.dataset.confirm)"
-                                    class="btn btn-sm btn-ghost-danger">{{ __('Delete') }}</button>
-                        </form>
+                            <a href="{{ route('categoria.delete', $cat->cat_id) }}" class="btn btn-sm btn-ghost-danger">{{ __('Delete') }}</a>
+                        </div>
                     </td>
                 </tr>
             @empty

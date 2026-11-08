@@ -63,6 +63,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/seleziona-entita', [EntityController::class,'storeSelectedEntity'])->name('salvaEntita');
 
         // Rotte CRUD per le categorie (show non è implementata)
+        Route::get('/categoria/{id}/elimina', [CatController::class, 'confirmDelete'])->name('categoria.delete');
+        Route::post('/categoria/{id}/sposta-movimenti', [CatController::class, 'moveMovements'])->name('categoria.move');
         Route::resource('categoria', CatController::class)->except('show');
 
         // Rotte della Dashboard (protette da middleware 'password_protect')

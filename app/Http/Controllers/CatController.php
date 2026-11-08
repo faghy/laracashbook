@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cat;
 use App\Models\Entity;
+use App\Models\Movimento;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -141,6 +142,65 @@ class CatController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
+    /**
+     * Pagina di eliminazione: se la categoria ha movimenti (anche nel cestino)
+     * li elenca per spostarli in un'altra categoria, altrimenti chiede conferma.
+     */
+    public function confirmDelete(int $id)
+    {
+        $categoria = Cat::forSelectedEntity()->findOrFail($id);
+
+        return view('movimenti.eliminaCat', [
+            'categoria' => $categoria,
+            'movs' => $this->movimentiDi($categoria)
+                ->orderByDesc('data_movimento')->orderByDesc('id')
+                ->paginate(50),
+            'altre' => Cat::forSelectedEntity()->where('cat_id', '!=', $categoria->cat_id)
+                ->orderBy('descriz_cat')->get(),
+        ]);
+    }
+
+    /**
+     * Sposta in un'altra categoria della stessa entità i movimenti indicati, o tutti.
+     */
+    public function moveMovements(Request $request, int $id)
+    {
+        $categoria = Cat::forSelectedEntity()->findOrFail($id);
+
+        $validated = $request->validate([
+            'target' => [
+                'required', 'integer', 'not_in:'.$categoria->cat_id,
+                Rule::exists('categorie', 'cat_id')->where('entity_id', $categoria->entity_id),
+            ],
+            'scope' => 'required|in:all,selected',
+            'ids' => 'exclude_unless:scope,selected|required|array|min:1',
+            'ids.*' => 'integer',
+        ], [
+            'ids.required' => __('Select at least one movement.'),
+        ]);
+
+        $query = $this->movimentiDi($categoria);
+        if ($validated['scope'] === 'selected') {
+            $query->whereIn('id', $validated['ids']);
+        }
+        $count = $query->update(['categoria' => $validated['target']]);
+
+        $target = Cat::find($validated['target']);
+
+        return redirect()->route('categoria.delete', $categoria->cat_id)
+            ->with('status', trans_choice(':count movement moved to :name.|:count movements moved to :name.', $count, ['name' => $target->descriz_cat]));
+    }
+
+    /**
+     * Movimenti della categoria, compresi quelli nel cestino.
+     */
+    private function movimentiDi(Cat $categoria)
+    {
+        return Movimento::withTrashed()
+            ->where('entity_id', $categoria->entity_id)
+            ->where('categoria', $categoria->cat_id);
+    }
+
     public function destroy(int $id)
     {
         $categoria = Cat::forSelectedEntity()->findOrFail($id);

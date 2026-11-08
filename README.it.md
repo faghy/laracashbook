@@ -25,7 +25,7 @@ guarda dove vanno i soldi.
 - **Filtri**: ricerca nel testo, periodo, categoria, entrate/uscite, più le scorciatoie Oggi e Ieri.
 - **Export CSV** dei movimenti filtrati, pronto per Excel in italiano (separatore `;` e virgola decimale).
 - **Cestino**: i movimenti eliminati si possono ripristinare o eliminare definitivamente.
-- **Categorie** per entità, con le impostazioni predefinite dei nuovi movimenti: entrata o uscita e flag *estero senza IVA*.
+- **Categorie** per entità, con le impostazioni predefinite dei nuovi movimenti: entrata o uscita e flag *estero senza IVA*. Per eliminare una categoria che ha ancora movimenti, li sposti prima in un'altra categoria (uno alla volta, i selezionati o tutti).
 - **Più entità**: ogni utente vede solo le entità a cui è associato e può sceglierne una predefinita, selezionata a ogni accesso.
 - **Dashboard** protetta da una password aggiuntiva: totali, filtri per periodo e categorie, andamento mensile e riepilogo per categoria.
 - **Logo** e nome dell'applicazione configurabili; di base logo e favicon di LaraCashbook.

@@ -243,6 +243,66 @@ class MovimentiFeaturesTest extends TestCase
         $this->assertDatabaseMissing('movimenti', ['id' => $mov->id]);
     }
 
+    public function test_delete_category_after_moving_its_movements(): void
+    {
+        $vuota = $this->makeCat('Vuota');
+        $altra = $this->makeCat('Altra');
+        $spesa = $this->spesa;
+        $ids = Movimento::where('categoria', $spesa->cat_id)->pluck('id');
+        $this->assertGreaterThan(1, $ids->count());
+        Movimento::find($ids->first())->delete(); // uno nel cestino
+
+        // Elenco categorie: il pulsante porta alla pagina di eliminazione
+        $this->actingAs($this->user)->get('/categoria')->assertSee(route('categoria.delete', $spesa->cat_id), false);
+
+        // Categoria vuota: conferma ed eliminazione
+        $this->actingAs($this->user)->get(route('categoria.delete', $vuota->cat_id))
+            ->assertOk()->assertSee('non ha movimenti');
+        $this->actingAs($this->user)->delete("/categoria/{$vuota->cat_id}")->assertRedirect('/categoria');
+        $this->assertDatabaseMissing('categorie', ['cat_id' => $vuota->cat_id]);
+
+        // Categoria con movimenti: li elenca, compresi quelli nel cestino
+        $this->actingAs($this->user)->get(route('categoria.delete', $spesa->cat_id))
+            ->assertOk()->assertSee('Supermercato')->assertSee('Nel cestino')->assertSee('Altra')
+            ->assertDontSee('non ha movimenti');
+
+        // Selezionati senza selezione: errore, niente spostato
+        $this->actingAs($this->user)->post(route('categoria.move', $spesa->cat_id), ['target' => $altra->cat_id, 'scope' => 'selected'])
+            ->assertSessionHasErrors('ids');
+
+        // Non nella stessa categoria né in una di un'altra entità
+        $estranea = new Cat(['descriz_cat' => 'Estranea']);
+        $estranea->entity_id = Entity::create(['name' => 'Altra azienda'])->id;
+        $estranea->save();
+        $this->actingAs($this->user)->post(route('categoria.move', $spesa->cat_id), ['target' => $spesa->cat_id, 'scope' => 'all'])
+            ->assertSessionHasErrors('target');
+        $this->actingAs($this->user)->post(route('categoria.move', $spesa->cat_id), ['target' => $estranea->cat_id, 'scope' => 'all'])
+            ->assertSessionHasErrors('target');
+
+        // Uno solo (quello nel cestino)
+        $this->actingAs($this->user)->post(route('categoria.move', $spesa->cat_id), ['target' => $altra->cat_id, 'scope' => 'selected', 'ids' => [$ids->first()]])
+            ->assertRedirect(route('categoria.delete', $spesa->cat_id))
+            ->assertSessionHas('status', '1 movimento spostato in Altra.');
+        $this->assertSame($altra->cat_id, Movimento::withTrashed()->find($ids->first())->categoria);
+
+        // Finché ha movimenti non si elimina
+        $this->actingAs($this->user)->delete("/categoria/{$spesa->cat_id}");
+        $this->assertDatabaseHas('categorie', ['cat_id' => $spesa->cat_id]);
+
+        // Tutti gli altri
+        $this->actingAs($this->user)->post(route('categoria.move', $spesa->cat_id), ['target' => $altra->cat_id, 'scope' => 'all'])
+            ->assertRedirect(route('categoria.delete', $spesa->cat_id));
+        $this->assertSame(0, Movimento::withTrashed()->where('categoria', $spesa->cat_id)->count());
+        $this->assertSame($ids->count(), Movimento::withTrashed()->where('categoria', $altra->cat_id)->count());
+
+        $this->actingAs($this->user)->get(route('categoria.delete', $spesa->cat_id))->assertSee('non ha movimenti');
+        $this->actingAs($this->user)->delete("/categoria/{$spesa->cat_id}")->assertRedirect('/categoria');
+        $this->assertDatabaseMissing('categorie', ['cat_id' => $spesa->cat_id]);
+
+        // Le categorie di altre entità non sono raggiungibili
+        $this->actingAs($this->user)->get(route('categoria.delete', $estranea->cat_id))->assertNotFound();
+    }
+
     public function test_edit_form_shows_movement_data(): void
     {
         $mov = Movimento::where('descrizione', 'Supermercato')->first();

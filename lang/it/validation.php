@@ -33,6 +33,7 @@ return [
         'numeric' => 'Il campo :attribute deve essere almeno :min.',
         'string' => 'Il campo :attribute deve avere almeno :min caratteri.',
     ],
+    'not_in' => 'Il valore selezionato per :attribute non è valido.',
     'numeric' => 'Il campo :attribute deve essere un numero.',
     'password' => [
         'letters' => 'Il campo :attribute deve contenere almeno una lettera.',
@@ -58,5 +59,6 @@ return [
         'data' => 'data',
         'entratauscita' => 'tipo',
         'default_entity_id' => 'entità predefinita',
+        'target' => 'categoria di destinazione',
     ],
 ];

@@ -27,6 +27,8 @@
             <div class="card w-full max-w-md mt-6 px-6 py-6 sm:px-8">
                 {{ $slot }}
             </div>
+
+            <x-credits light class="mt-6" />
         </div>
     </body>
 </html>
