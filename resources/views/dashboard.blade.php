@@ -12,7 +12,6 @@
         $fieldClass = 'w-full';
     @endphp
 
-    @if(auth()->user()->role !== 'stagista')
         {{-- Totali generali dell'entità --}}
         <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div class="card p-4 border-l-4 border-l-indigo-500">
@@ -204,7 +203,6 @@
                 </tbody>
             </table>
         </section>
-    @endif
 
     {{-- Utenti dell'entità --}}
     <section class="card overflow-x-auto">

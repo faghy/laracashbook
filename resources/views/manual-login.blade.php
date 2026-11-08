@@ -7,7 +7,8 @@
     @if (config('app.demo'))
         <div class="mb-6 px-4 py-3 border-l-4 rounded-lg bg-indigo-50 border-indigo-500 text-indigo-900 text-sm">
             <p class="font-bold">{{ __('Demo') }}</p>
-            <p>{{ __('Email') }}: <code>demo@example.com</code> · {{ __('Password') }}: <code>password</code></p>
+            <p>{{ __('Admin') }}: <code>demo@example.com</code> · {{ __('Operator') }}: <code>operatore@example.com</code></p>
+            <p>{{ __('Password') }}: <code>password</code></p>
             <p class="mt-1">{{ __('Data are reset every night.') }}</p>
         </div>
     @endif

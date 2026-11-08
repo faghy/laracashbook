@@ -53,6 +53,16 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Un utente disattivato non entra; il messaggio è lo stesso delle credenziali errate
+        if (Auth::user()->isDisabled()) {
+            Auth::guard('web')->logout();
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

@@ -27,6 +27,7 @@ guarda dove vanno i soldi.
 - **Cestino**: i movimenti eliminati si possono ripristinare o eliminare definitivamente.
 - **Categorie** per entità, con le impostazioni predefinite dei nuovi movimenti: entrata o uscita e flag *estero senza IVA*. Per eliminare una categoria che ha ancora movimenti, li sposti prima in un'altra categoria (uno alla volta, i selezionati o tutti).
 - **Più entità**: ogni utente vede solo le entità a cui è associato e può sceglierne una predefinita, selezionata a ogni accesso.
+- **Ruoli e utenti**: super admin, admin e operatore (vedi sotto); gli admin gestiscono gli utenti delle loro entità, gli utenti si disattivano invece di essere cancellati.
 - **Dashboard** protetta da una password aggiuntiva: totali, filtri per periodo e categorie, andamento mensile e riepilogo per categoria.
 - **Logo** e nome dell'applicazione configurabili; di base logo e favicon di LaraCashbook.
 - **Interfaccia in italiano e in inglese**, con dati di esempio in entrambe le lingue.
@@ -83,7 +84,7 @@ Poi:
    php artisan serve
    ```
 
-5. Crea il primo utente. Le entità indicate vengono create se non esistono:
+5. Crea il primo utente. Il primo diventa **super admin**; le entità indicate vengono create se non esistono:
 
    ```bash
    php artisan cashbook:create-user --name="Mario Rossi" --email=mario@example.com --entity=Casa --entity=Studio
@@ -100,17 +101,8 @@ categorie e circa sei mesi di movimenti, nella lingua impostata in `APP_LOCALE`)
 php artisan migrate --seed
 ```
 
-Accedi come `demo@example.com` con la password `password`. Usa i dati di esempio solo in
+Accedi come `demo@example.com` (admin) oppure `operatore@example.com` (operatore), con la password `password`. Usa i dati di esempio solo in
 un'installazione di prova: chiunque conosca queste credenziali può entrare.
-
-### Area amministratore
-
-All'indirizzo `/admin` c'è una piccola area amministratore. Per crearne l'account imposta
-`ADMIN_SEED_EMAIL` e `ADMIN_SEED_PASSWORD` nel `.env` e lancia:
-
-```bash
-php artisan db:seed --class=AdminUserSeeder
-```
 
 ## Configurazione
 
@@ -123,11 +115,22 @@ php artisan db:seed --class=AdminUserSeeder
 | `PASSWORD_PROTECT` | Password aggiuntiva della dashboard. |
 | `DEMO_MODE` | `true` per una demo pubblica: mostra le credenziali di prova (`demo@example.com` / `password` e la password della dashboard) e blocca le modifiche all'account e il recupero password. |
 | `TRUSTED_PROXIES` | Indirizzi IP dei reverse proxy davanti all'app (separati da virgola, anche CIDR), es. `10.0.0.200`. Serve dietro un proxy o un bilanciatore: altrimenti tutti i visitatori hanno l'IP del proxy e condividono gli stessi limiti di accesso. Il proxy deve mandare `X-Forwarded-For` con l'IP del visitatore. |
-| `ADMIN_SEED_NAME`, `ADMIN_SEED_EMAIL`, `ADMIN_SEED_PASSWORD` | Account creato da `AdminUserSeeder`. |
 
-Ogni utente ha un ruolo (`stagista`, `operatore` o `responsabile`), da impostare con `--role` su
-`cashbook:create-user`; il predefinito è `responsabile`. Gli utenti `stagista` non vedono i totali
-generali nella dashboard.
+### Ruoli
+
+| Ruolo | Può |
+|---|---|
+| `superadmin` | Tutto: vede tutte le entità e tutti gli utenti, crea, rinomina ed elimina entità, assegna qualsiasi ruolo. |
+| `admin` | Dashboard e totali (anche quelli della giornata), categorie, export CSV, eliminazione definitiva dal cestino; gestisce admin e operatori delle sue entità (crea, modifica, reimposta la password, disattiva). |
+| `operatore` | Solo inserisce, modifica ed elimina movimenti (e li ripristina dal cestino): niente totali, dashboard, categorie o export. |
+
+Gli utenti si gestiscono da **Utenti** nel menu utente. Un nuovo utente o un reset della password
+riceve una password casuale, mostrata una sola volta. Da riga di comando:
+
+```bash
+php artisan cashbook:create-user --role=admin ...   # superadmin, admin oppure operatore
+php artisan cashbook:set-role mario@example.com superadmin
+```
 
 ## Pubblicazione
 

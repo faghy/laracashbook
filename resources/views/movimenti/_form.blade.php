@@ -51,10 +51,10 @@
                     <option value="{{ $cat->cat_id }}" data-estero="{{ $cat->estero_senza_iva ? 1 : 0 }}" data-tipo="{{ $cat->tipo_predefinito }}" @selected($categoria === (int) $cat->cat_id)>{{ $cat->descriz_cat }}</option>
                 @endforeach
             </select>
-            @unless ($movimento)
+            @if (! $movimento && Gate::allows('admin'))
                 <a href="{{ route('categoria.create', ['source' => 'movimenti.create']) }}"
                    class="btn btn-secondary">{{ __('+ New category') }}</a>
-            @endunless
+            @endif
         </div>
     </div>
 

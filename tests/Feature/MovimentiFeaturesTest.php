@@ -29,7 +29,7 @@ class MovimentiFeaturesTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = User::factory()->create(['role' => 'responsabile']);
+        $this->user = User::factory()->create(['role' => 'admin']);
         $this->entity = Entity::create(['name' => 'Mia Azienda']);
         UserEntity::create(['user_id' => $this->user->id, 'entity_id' => $this->entity->id]);
 

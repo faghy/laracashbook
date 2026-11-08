@@ -30,16 +30,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::define('view-customer', function (User $user) {
-            return $user->role == 'stagista';
-        });
+        // Totali, dashboard, categorie, export, eliminazione definitiva e gestione utenti
+        Gate::define('admin', fn (User $user) => $user->isAdmin());
 
-        Gate::define('edit-customer', function (User $user) {
-            return $user->role == 'operatore';
-        });
+        // Entità e tutti gli utenti
+        Gate::define('superadmin', fn (User $user) => $user->isSuperadmin());
 
-        Gate::define('delete-customer', function (User $user) {
-            return $user->role == 'responsabile';
-        });
+        Gate::define('manage-user', fn (User $user, User $target) => $user->canManage($target));
     }
 }

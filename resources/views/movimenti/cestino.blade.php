@@ -33,6 +33,7 @@
                                 @method('PATCH')
                                 <button type="submit" class="btn btn-sm btn-secondary">{{ __('Restore') }}</button>
                             </form>
+                            @can('admin')
                             <form method="POST" action="{{ route('movimenti.forceDestroy', $mov->id) }}">
                                 @csrf
                                 @method('DELETE')
@@ -41,6 +42,7 @@
                                         onclick="return confirm(this.dataset.confirm)"
                                         class="btn btn-sm btn-ghost-danger">{{ __('Delete for good') }}</button>
                             </form>
+                            @endcan
                         </div>
                     </td>
                 </tr>

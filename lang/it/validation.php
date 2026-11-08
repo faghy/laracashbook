@@ -60,5 +60,7 @@ return [
         'entratauscita' => 'tipo',
         'default_entity_id' => 'entità predefinita',
         'target' => 'categoria di destinazione',
+        'role' => 'ruolo',
+        'entities' => 'entità',
     ],
 ];

@@ -18,7 +18,8 @@ class MovimentoController extends Controller
 
         $filters = $this->validatedFilters($request);
         $query = Movimento::forSelectedEntity()->filter($filters);
-        $day = $this->dayTotals($query, $filters);
+        // I totali della giornata li vedono solo admin e superadmin
+        $day = $request->user()->isAdmin() ? $this->dayTotals($query, $filters) : null;
 
         $movs = $query->with('categorie')
             ->orderBy('data_movimento', 'DESC')

@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Hash;
 /**
  * Dati di esempio per provare l'applicazione: un utente demo, due entità
  * con le loro categorie e circa sei mesi di movimenti, in inglese o in italiano.
- * Accesso: demo@example.com / password (solo per installazioni di prova).
+ * Accesso: demo@example.com (admin) oppure operatore@example.com (operatore), password "password"
+ * (solo per installazioni di prova).
  */
 class DemoSeeder extends Seeder
 {
@@ -75,7 +76,7 @@ class DemoSeeder extends Seeder
             'email' => 'demo@example.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
-            'role' => 'responsabile',
+            'role' => 'admin',
         ]);
 
         foreach ($data as $entityName => $categories) {
@@ -93,7 +94,18 @@ class DemoSeeder extends Seeder
         }
 
         // La prima entità (la casa) è quella predefinita
-        $user->forceFill(['default_entity_id' => Entity::where('name', array_key_first($data))->value('id')])->save();
+        $first = Entity::where('name', array_key_first($data))->value('id');
+        $user->forceFill(['default_entity_id' => $first])->save();
+
+        // Un operatore sulla prima entità, per provare il ruolo che vede solo i movimenti
+        $operatore = User::forceCreate([
+            'name' => app()->getLocale() === 'it' ? 'Operatore demo' : 'Demo operator',
+            'email' => 'operatore@example.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('password'),
+            'role' => 'operatore',
+        ]);
+        UserEntity::create(['user_id' => $operatore->id, 'entity_id' => $first]);
     }
 
     private function seedMovements(User $user, Entity $entity, Cat $cat, int $tipo, int $min, int $max, int $perMonth, bool $estero, array $descriptions): void

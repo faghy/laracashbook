@@ -4,9 +4,11 @@
         ['route' => 'movimenti.index', 'label' => __('Movements'), 'active' => 'movimenti.index'],
         ['route' => 'movimenti.oggi', 'label' => __('Today'), 'active' => null],
         ['route' => 'movimenti.ieri', 'label' => __('Yesterday'), 'active' => null],
-        ['route' => 'categoria.index', 'label' => __('Categories'), 'active' => 'categoria.*'],
+        ['route' => 'categoria.index', 'label' => __('Categories'), 'active' => 'categoria.*', 'can' => 'admin'],
         ['route' => 'movimenti.cestino', 'label' => __('Trash'), 'active' => 'movimenti.cestino'],
     ];
+    // Voci riservate (es. Categorie solo per admin e superadmin)
+    $links = array_filter($links, fn ($link) => ! isset($link['can']) || Gate::allows($link['can']));
     $linkClass = 'px-3 py-2 rounded-lg font-medium transition-colors';
     $activeClass = 'bg-white/20 text-white';
     $idleClass = 'text-indigo-100 hover:bg-white/10 hover:text-white';
@@ -43,9 +45,19 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('dashboard')">
-                            {{ __('Dashboard') }}
-                        </x-dropdown-link>
+                        @can('admin')
+                            <x-dropdown-link :href="route('dashboard')">
+                                {{ __('Dashboard') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('utenti.index')">
+                                {{ __('Users') }}
+                            </x-dropdown-link>
+                        @endcan
+                        @can('superadmin')
+                            <x-dropdown-link :href="route('entita.index')">
+                                {{ __('Entities') }}
+                            </x-dropdown-link>
+                        @endcan
 
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
@@ -93,7 +105,13 @@
             <div class="px-3 text-sm text-indigo-200">{{ Auth::user()?->email }}</div>
 
             <div class="mt-2 flex flex-col gap-1">
-                <a href="{{ route('dashboard') }}" class="{{ $linkClass }} {{ request()->routeIs('dashboard') ? $activeClass : $idleClass }}">{{ __('Dashboard') }}</a>
+                @can('admin')
+                    <a href="{{ route('dashboard') }}" class="{{ $linkClass }} {{ request()->routeIs('dashboard') ? $activeClass : $idleClass }}">{{ __('Dashboard') }}</a>
+                    <a href="{{ route('utenti.index') }}" class="{{ $linkClass }} {{ request()->routeIs('utenti.*') ? $activeClass : $idleClass }}">{{ __('Users') }}</a>
+                @endcan
+                @can('superadmin')
+                    <a href="{{ route('entita.index') }}" class="{{ $linkClass }} {{ request()->routeIs('entita.*') ? $activeClass : $idleClass }}">{{ __('Entities') }}</a>
+                @endcan
                 <a href="{{ route('profile.edit') }}" class="{{ $linkClass }} {{ request()->routeIs('profile.edit') ? $activeClass : $idleClass }}">{{ __('Profile') }}</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

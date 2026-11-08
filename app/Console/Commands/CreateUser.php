@@ -15,7 +15,7 @@ class CreateUser extends Command
                             {--name= : Nome dell\'utente}
                             {--email= : Email usata per accedere}
                             {--entity=* : Entità da associare (creata se non esiste), ripetibile}
-                            {--role=responsabile : Ruolo (stagista, operatore, responsabile)}';
+                            {--role= : Ruolo (superadmin, admin, operatore); il primo utente è superadmin, poi admin}';
 
     protected $description = 'Crea un utente e lo associa a una o più entità';
 
@@ -26,13 +26,15 @@ class CreateUser extends Command
         $entities = $this->option('entity') ?: [$this->ask('Entità', 'Personale')];
         $password = $this->secret('Password (almeno 8 caratteri)');
 
+        $role = $this->option('role') ?: (User::where('role', 'superadmin')->exists() ? 'admin' : 'superadmin');
+
         $validator = Validator::make(
-            ['name' => $name, 'email' => $email, 'password' => $password, 'role' => $this->option('role')],
+            ['name' => $name, 'email' => $email, 'password' => $password, 'role' => $role],
             [
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|max:255|unique:users,email',
                 'password' => 'required|string|min:8',
-                'role' => 'required|in:stagista,operatore,responsabile',
+                'role' => 'required|in:superadmin,admin,operatore',
             ],
         );
 
@@ -49,7 +51,7 @@ class CreateUser extends Command
             'email' => $email,
             'email_verified_at' => now(),
             'password' => Hash::make($password),
-            'role' => $this->option('role'),
+            'role' => $role,
         ]);
 
         foreach ($entities as $entityName) {
@@ -57,7 +59,7 @@ class CreateUser extends Command
             UserEntity::firstOrCreate(['user_id' => $user->id, 'entity_id' => $entity->id]);
         }
 
-        $this->info("Utente {$email} creato e associato a: ".implode(', ', $entities).'.');
+        $this->info("Utente {$email} ({$role}) creato e associato a: ".implode(', ', $entities).'.');
 
         return self::SUCCESS;
     }

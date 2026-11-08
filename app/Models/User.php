@@ -69,7 +69,61 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'disabled_at' => 'datetime',
     ];
+
+    /**
+     * Ruoli dal più alto al più basso: il superadmin vede e fa tutto, l'admin gestisce
+     * le sue entità (totali, categorie, utenti di pari livello o inferiore),
+     * l'operatore lavora solo sui movimenti.
+     */
+    public const ROLES = ['superadmin' => 3, 'admin' => 2, 'operatore' => 1];
+
+    public function isSuperadmin(): bool
+    {
+        return $this->role === 'superadmin';
+    }
+
+    /**
+     * Admin o superadmin: vede totali e dashboard, gestisce categorie e utenti.
+     */
+    public function isAdmin(): bool
+    {
+        return in_array($this->role, ['admin', 'superadmin'], true);
+    }
+
+    public function isDisabled(): bool
+    {
+        return $this->disabled_at !== null;
+    }
+
+    public function roleLevel(): int
+    {
+        return self::ROLES[$this->role] ?? 0;
+    }
+
+    /**
+     * Ruoli che questo utente può assegnare: il superadmin tutti, l'admin admin e operatore.
+     */
+    public function assignableRoles(): array
+    {
+        return array_keys(array_filter(self::ROLES, fn ($level) => $level <= $this->roleLevel()));
+    }
+
+    /**
+     * Può modificare l'utente indicato: il superadmin chiunque, l'admin gli utenti
+     * di pari livello o inferiore che condividono almeno una delle sue entità.
+     */
+    public function canManage(User $user): bool
+    {
+        if ($this->isSuperadmin()) {
+            return true;
+        }
+
+        return $this->isAdmin()
+            && $user->roleLevel() <= $this->roleLevel()
+            && array_intersect($user->entityIds(), $this->entityIds()) !== [];
+    }
 
     public function movimenti() {
         return $this->hasMany(Movimento::class);
@@ -87,6 +141,11 @@ class User extends Authenticatable
      */
     public function entityIds(): array
     {
+        // Il superadmin ha accesso a tutte le entità
+        if ($this->isSuperadmin()) {
+            return Entity::orderBy('name')->pluck('id')->map(fn ($id) => (int) $id)->all();
+        }
+
         return $this->userEntities->pluck('entity_id')->map(fn ($id) => (int) $id)->unique()->values()->all();
     }
 

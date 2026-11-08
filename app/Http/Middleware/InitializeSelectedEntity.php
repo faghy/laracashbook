@@ -22,6 +22,11 @@ class InitializeSelectedEntity
             $associatedEntityIds = $user->entityIds();
 
             if (empty($associatedEntityIds)) {
+                // Il superadmin di un'installazione nuova crea prima un'entità
+                if ($user->isSuperadmin()) {
+                    return redirect()->route('entita.index')->with('status', __('Create the first entity to start.'));
+                }
+
                 abort(403, __('Your user is not linked to any entity.'));
             }
 

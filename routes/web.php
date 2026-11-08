@@ -2,9 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\{MovimentoController, CatController, EntityController, DashboardController};
+use App\Http\Controllers\{MovimentoController, CatController, EntityController, DashboardController, UserController};
 use App\Http\Middleware\InitializeSelectedEntity; // Assicurati che questo sia incluso
-use Illuminate\Support\Facades\Redirect; // Necessario per Redirect::to
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +29,7 @@ require __DIR__.'/auth.php';
 
 // --- Gruppo di Rotte Autenticate e Verificate ---
 // Middleware 'auth' per utenti loggati, 'verified' per utenti con email verificata
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'active'])->group(function () {
 
     // Rotte del profilo utente
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -51,11 +50,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/movimenti/ieri', [MovimentoController::class,'yesterday'])->name('movimenti.ieri');
         Route::get('/movimenti/altroieri', [MovimentoController::class,'beforeyesterday'])->name('movimenti.altroieri');
 
-        // Export CSV e cestino dei movimenti
-        Route::get('/movimenti/export', [MovimentoController::class,'export'])->name('movimenti.export');
+        // Cestino dei movimenti (ripristino per tutti, export ed eliminazione definitiva solo admin)
+        Route::get('/movimenti/export', [MovimentoController::class,'export'])->name('movimenti.export')->middleware('can:admin');
         Route::get('/movimenti/cestino', [MovimentoController::class,'trash'])->name('movimenti.cestino');
         Route::patch('/movimenti/{id}/ripristina', [MovimentoController::class,'restore'])->name('movimenti.restore');
-        Route::delete('/movimenti/{id}/elimina-definitivamente', [MovimentoController::class,'forceDestroy'])->name('movimenti.forceDestroy');
+        Route::delete('/movimenti/{id}/elimina-definitivamente', [MovimentoController::class,'forceDestroy'])->name('movimenti.forceDestroy')->middleware('can:admin');
 
         // Rotte CRUD per i movimenti (show non è implementata)
         Route::resource('movimenti', MovimentoController::class)->except('show');
@@ -63,34 +62,41 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Rotta per la selezione e salvataggio dell'entità
         Route::post('/seleziona-entita', [EntityController::class,'storeSelectedEntity'])->name('salvaEntita');
 
-        // Rotte CRUD per le categorie (show non è implementata)
-        Route::get('/categoria/{id}/elimina', [CatController::class, 'confirmDelete'])->name('categoria.delete');
-        Route::post('/categoria/{id}/sposta-movimenti', [CatController::class, 'moveMovements'])->name('categoria.move');
-        Route::resource('categoria', CatController::class)->except('show');
+        // --- Solo admin e superadmin: categorie e dashboard (totali) ---
+        Route::middleware('can:admin')->group(function () {
+            Route::get('/categoria/{id}/elimina', [CatController::class, 'confirmDelete'])->name('categoria.delete');
+            Route::post('/categoria/{id}/sposta-movimenti', [CatController::class, 'moveMovements'])->name('categoria.move');
+            Route::resource('categoria', CatController::class)->except('show');
 
-        // Rotte della Dashboard (protette da middleware 'password_protect')
-        Route::get('dashboard', [DashboardController::class, 'index'])
-            ->name('dashboard')->middleware('password_protect');
-        Route::post('dashboard', [DashboardController::class, 'index'])
-            ->middleware(['throttle:5,1', 'password_protect']);
+            // Dashboard, con la password aggiuntiva se PASSWORD_PROTECT è impostata
+            Route::get('dashboard', [DashboardController::class, 'index'])
+                ->name('dashboard')->middleware('password_protect');
+            Route::post('dashboard', [DashboardController::class, 'index'])
+                ->middleware(['throttle:5,1', 'password_protect']);
+        });
     });
-});
 
+    // --- Gestione utenti (admin e superadmin): non dipende dall'entità selezionata ---
+    Route::middleware('can:admin')->group(function () {
+        // Gestione utenti: l'admin vede quelli delle sue entità, il superadmin tutti
+        Route::get('/utenti', [UserController::class, 'index'])->name('utenti.index');
+        Route::get('/utenti/nuovo', [UserController::class, 'create'])->name('utenti.create');
+        Route::get('/utenti/{user}/modifica', [UserController::class, 'edit'])->name('utenti.edit');
+        Route::middleware('not_in_demo')->group(function () {
+            Route::post('/utenti', [UserController::class, 'store'])->name('utenti.store');
+            Route::patch('/utenti/{user}', [UserController::class, 'update'])->name('utenti.update');
+            Route::post('/utenti/{user}/nuova-password', [UserController::class, 'resetPassword'])->name('utenti.password');
+            Route::post('/utenti/{user}/stato', [UserController::class, 'toggleActive'])->name('utenti.toggle');
+        });
+    });
 
-// --- Rotte Amministratore ---
-Route::prefix('admin')->name('admin.')->group(function() {
-    // Reindirizza la root /admin alla pagina di login dell'amministratore
-    Route::get('/', function () { return Redirect::to(route('admin.login')); });
-
-    // Rotte di login e logout per l'amministratore (guest:admin middleware se disponibile)
-    Route::get('/login', [\App\Http\Controllers\Admin\LoginController::class, 'loginForm'])->name('login');
-    Route::post('/login', [\App\Http\Controllers\Admin\LoginController::class, 'login'])->middleware('throttle:5,1');
-    Route::get('/logout', [\App\Http\Controllers\Admin\LoginController::class, 'logout'])->name('logout');
-
-    // Rotte specifiche dell'area admin (richiede autenticazione come 'admin')
-    Route::middleware('auth:admin')->group(function() {
-        Route::get('/dashboard', function () {
-            return view('admin-dashboard');
-        })->name('dashboard');
+    // --- Solo superadmin: entità ---
+    Route::middleware('can:superadmin')->group(function () {
+        Route::get('/entita', [EntityController::class, 'index'])->name('entita.index');
+        Route::middleware('not_in_demo')->group(function () {
+            Route::post('/entita', [EntityController::class, 'store'])->name('entita.store');
+            Route::patch('/entita/{entity}', [EntityController::class, 'update'])->name('entita.update');
+            Route::delete('/entita/{entity}', [EntityController::class, 'destroy'])->name('entita.destroy');
+        });
     });
 });

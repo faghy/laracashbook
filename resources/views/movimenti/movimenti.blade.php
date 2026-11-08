@@ -43,7 +43,9 @@
             <div class="flex flex-wrap gap-2 md:ml-auto">
                 <button type="submit" class="btn btn-primary">{{ __('Filter') }}</button>
                 <a href="{{ route('movimenti.index') }}" class="btn btn-secondary">{{ __('Clear') }}</a>
-                <a href="{{ route('movimenti.export', request()->query()) }}" class="btn btn-success">{{ __('Export CSV') }}</a>
+                @can('admin')
+                    <a href="{{ route('movimenti.export', request()->query()) }}" class="btn btn-success">{{ __('Export CSV') }}</a>
+                @endcan
             </div>
         </div>
     </form>

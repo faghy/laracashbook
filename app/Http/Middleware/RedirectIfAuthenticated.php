@@ -20,18 +20,12 @@ class RedirectIfAuthenticated
     public function handle(Request $request, Closure $next, ...$guards)
     {
         $guards = empty($guards) ? [null] : $guards;
-//dd($guards);
+
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                if ($guard === 'admin') {
-                    return redirect()->route('admin.dashboard');
-                } elseif ($guard === 'web') {
-                        return redirect()->route('movimenti.index');
-                }
-                else {
-                    return redirect(RouteServiceProvider::HOME);
-                }
-
+                return $guard === 'web'
+                    ? redirect()->route('movimenti.index')
+                    : redirect(RouteServiceProvider::HOME);
             }
         }
 
