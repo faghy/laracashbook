@@ -69,7 +69,14 @@ class DemoSeeder extends Seeder
     {
         mt_srand(2026); // dati sempre uguali a ogni installazione
 
-        $data = self::DATA[app()->getLocale()] ?? self::DATA['en'];
+        $locale = isset(self::DATA[app()->getLocale()]) ? app()->getLocale() : 'en';
+        $data = self::DATA[$locale];
+        // Sulla demo pubblica (DEMO_MODE) ci sono anche le entità nelle altre lingue,
+        // così chi sceglie un'altra lingua dell'interfaccia trova dati nella sua lingua
+        $others = config('app.demo') ? array_diff_key(self::DATA, [$locale => true]) : [];
+        foreach ($others as $more) {
+            $data += $more;
+        }
 
         $user = User::forceCreate([
             'name' => app()->getLocale() === 'it' ? 'Utente demo' : 'Demo user',
@@ -97,7 +104,6 @@ class DemoSeeder extends Seeder
         $first = Entity::where('name', array_key_first($data))->value('id');
         $user->forceFill(['default_entity_id' => $first])->save();
 
-        // Un operatore sulla prima entità, per provare il ruolo che vede solo i movimenti
         $operatore = User::forceCreate([
             'name' => app()->getLocale() === 'it' ? 'Operatore demo' : 'Demo operator',
             'email' => 'operatore@example.com',
@@ -105,7 +111,19 @@ class DemoSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'operatore',
         ]);
-        UserEntity::create(['user_id' => $operatore->id, 'entity_id' => $first]);
+        // Un operatore sulla prima entità di ogni lingua, per provare il ruolo che vede solo i movimenti
+        foreach ([self::DATA[$locale], ...array_values($others)] as $language) {
+            UserEntity::create(['user_id' => $operatore->id, 'entity_id' => Entity::where('name', array_key_first($language))->value('id')]);
+        }
+    }
+
+    /**
+     * Nome della prima entità di esempio in una lingua (es. "Casa" per l'italiano).
+     * Sulla demo serve ad aprire l'entità nella lingua dell'interfaccia.
+     */
+    public static function homeEntityName(string $locale): ?string
+    {
+        return isset(self::DATA[$locale]) ? array_key_first(self::DATA[$locale]) : null;
     }
 
     private function seedMovements(User $user, Entity $entity, Cat $cat, int $tipo, int $min, int $max, int $perMonth, bool $estero, array $descriptions): void

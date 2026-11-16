@@ -16,8 +16,8 @@ guarda dove vanno i soldi.
 
 ![Elenco dei movimenti](docs/screenshots/it/movements.png)
 
-> L'interfaccia è disponibile in **italiano** e in **inglese**: imposta `APP_LOCALE=it` nel `.env`
-> (la lingua predefinita è l'inglese).
+> L'interfaccia è disponibile in **italiano** e in **inglese**: ogni utente sceglie la lingua dal menu o dalla
+> pagina di accesso; altrimenti vale quella del browser o `APP_LOCALE=it` nel `.env` (la predefinita è l'inglese).
 
 ## Funzionalità
 
@@ -30,7 +30,7 @@ guarda dove vanno i soldi.
 - **Ruoli e utenti**: super admin, admin e operatore (vedi sotto); gli admin gestiscono gli utenti delle loro entità, gli utenti si disattivano invece di essere cancellati.
 - **Dashboard** protetta da una password aggiuntiva: totali, filtri per periodo e categorie, andamento mensile e riepilogo per categoria.
 - **Logo** e nome dell'applicazione configurabili; di base logo e favicon di LaraCashbook.
-- **Interfaccia in italiano e in inglese**, con dati di esempio in entrambe le lingue.
+- **Interfaccia in italiano e in inglese** con selettore della lingua, ricordata per ogni utente; dati di esempio in entrambe le lingue.
 - **Sicurezza**: accesso limitato per email e per IP, reset della password che non rivela le email registrate, intestazioni di sicurezza (HSTS, protezione da iframe e dal riconoscimento dei tipi).
 - Layout responsive (Tailwind CSS 4), comodo anche da telefono.
 
@@ -109,11 +109,12 @@ un'installazione di prova: chiunque conosca queste credenziali può entrare.
 | Variabile | Uso |
 |---|---|
 | `APP_NAME` | Nome mostrato nella barra di navigazione, nella pagina di accesso e nella scheda del browser. |
-| `APP_LOCALE` | Lingua dell'interfaccia: `en` (predefinita) o `it`. Il formato degli importi e del CSV la segue. |
+| `APP_LOCALE` | Lingua predefinita dell'interfaccia: `en` (predefinita) o `it`. Ogni utente può cambiarla dal menu; il formato degli importi e del CSV segue la lingua in uso. |
+| `LOCALE_FROM_BROWSER` | `true` (predefinito): chi non ha scelto una lingua vede quella del browser, se disponibile. `false`: sempre `APP_LOCALE` finché l'utente non sceglie. |
 | `CASHBOOK_LOGO_URL` | Logo accanto al nome, nella barra di navigazione e nella pagina di accesso: un URL completo o un percorso dentro `public/`, ad esempio `/images/logo.svg`. Vuoto = logo di LaraCashbook, `none` = nessun logo. La barra di navigazione è scura: usa una versione chiara. |
 | `CASHBOOK_LOGO_ALT` | Testo alternativo del logo (vuoto di base, perché accanto c'è già il nome). |
 | `PASSWORD_PROTECT` | Password aggiuntiva della dashboard. |
-| `DEMO_MODE` | `true` per una demo pubblica: mostra le credenziali di prova (`demo@example.com` / `password` e la password della dashboard) e blocca le modifiche all'account e il recupero password. |
+| `DEMO_MODE` | `true` per una demo pubblica: mostra le credenziali di prova (`demo@example.com` / `password` e la password della dashboard) e blocca le modifiche all'account e il recupero password. I dati di esempio sono creati in tutte le lingue e il selettore della lingua vale solo per la sessione del visitatore. |
 | `TRUSTED_PROXIES` | Indirizzi IP dei reverse proxy davanti all'app (separati da virgola, anche CIDR), es. `10.0.0.200`. Serve dietro un proxy o un bilanciatore: altrimenti tutti i visitatori hanno l'IP del proxy e condividono gli stessi limiti di accesso. Il proxy deve mandare `X-Forwarded-For` con l'IP del visitatore. |
 
 ### Ruoli

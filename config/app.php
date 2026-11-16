@@ -104,6 +104,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Interface languages
+    |--------------------------------------------------------------------------
+    |
+    | Languages each user can pick with the switcher in the menu and on the
+    | login page. Who has not picked one sees the browser's language, if it
+    | is one of these and LOCALE_FROM_BROWSER is true, otherwise APP_LOCALE.
+    |
+    */
+
+    'locales' => ['en' => 'English', 'it' => 'Italiano'],
+
+    // Default language of the installation (app.locale changes with each request's language)
+    'default_locale' => env('APP_LOCALE', 'en'),
+
+    'locale_from_browser' => (bool) env('LOCALE_FROM_BROWSER', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Fallback Locale
     |--------------------------------------------------------------------------
     |

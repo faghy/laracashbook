@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Entity;
 use Closure;
+use Database\Seeders\DemoSeeder;
 use Illuminate\Http\Request;
 
 class InitializeSelectedEntity
@@ -32,10 +34,24 @@ class InitializeSelectedEntity
 
             // Se in sessione non c'è un'entità valida (es. dopo il login), usa quella predefinita dell'utente
             if (! in_array((int) session('selected_entity_id'), $associatedEntityIds, true)) {
-                session(['selected_entity_id' => $user->initialEntityId()]);
+                session(['selected_entity_id' => self::demoEntityId($associatedEntityIds) ?? $user->initialEntityId()]);
             }
         }
 
         return $next($request);
+    }
+
+    /**
+     * Sulla demo (DEMO_MODE) l'entità di esempio nella lingua dell'interfaccia, se l'utente la vede.
+     */
+    public static function demoEntityId(array $associatedEntityIds): ?int
+    {
+        if (! config('app.demo') || ! $name = DemoSeeder::homeEntityName(app()->getLocale())) {
+            return null;
+        }
+
+        $id = Entity::whereIn('id', $associatedEntityIds)->where('name', $name)->value('id');
+
+        return $id === null ? null : (int) $id;
     }
 }

@@ -16,7 +16,7 @@ money goes.
 
 ![Movements list](docs/screenshots/movements.png)
 
-> The interface is available in **English** and **Italian** (`APP_LOCALE=en` or `it`). Pull requests adding more languages are welcome: copy `lang/it.json` to `lang/<code>.json` and translate it.
+> The interface is available in **English** and **Italian**: each user picks the language from the menu or the login page, otherwise the browser's language or `APP_LOCALE` is used. Pull requests adding more languages are welcome: copy `lang/it.json` to `lang/<code>.json` and translate it.
 
 ## Features
 
@@ -29,7 +29,7 @@ money goes.
 - **Roles and users**: super admin, admin and operator (see below); admins manage the users of their entities, users are disabled instead of deleted.
 - **Dashboard** behind an extra password: totals, period and category filters, monthly trend and per-category summary.
 - **Configurable logo** and application name; LaraCashbook logo and favicon by default.
-- **English and Italian** interface, demo data included.
+- **English and Italian** interface with a language switcher, remembered for each user; demo data included.
 - **Security**: sign-in limited per email and per IP, password reset that does not reveal registered emails, security headers (HSTS, frame and content-type protection).
 - Responsive layout (Tailwind CSS 4) that works well on phones.
 
@@ -107,11 +107,12 @@ installation: anyone who knows these credentials can sign in.
 | Variable | Purpose |
 |---|---|
 | `APP_NAME` | Name shown in the navigation bar, on the sign-in page and in the browser tab. |
-| `APP_LOCALE` | Interface language: `en` (default) or `it`. Amounts and the CSV format follow it. |
+| `APP_LOCALE` | Default interface language: `en` (default) or `it`. Users can switch language from the menu; amounts and the CSV format follow the language in use. |
+| `LOCALE_FROM_BROWSER` | `true` (default): users who have not chosen a language see the browser's language, if supported. `false`: always `APP_LOCALE` until the user chooses. |
 | `CASHBOOK_LOGO_URL` | Logo shown next to the name in the navigation bar and on the sign-in page: an absolute URL or a path in `public/` such as `/images/logo.svg`. Empty means the LaraCashbook logo, `none` means no logo. The navigation bar is dark, so use a light version. |
 | `CASHBOOK_LOGO_ALT` | Alternative text for the logo (empty by default, since the name is shown next to it). |
 | `PASSWORD_PROTECT` | Extra password for the dashboard. |
-| `DEMO_MODE` | `true` for a public demo: shows the demo credentials (`demo@example.com` / `password` and the dashboard password) and blocks account changes and password resets. |
+| `DEMO_MODE` | `true` for a public demo: shows the demo credentials (`demo@example.com` / `password` and the dashboard password) and blocks account changes and password resets. The sample data is seeded in every language, and the language switcher only applies to the visitor's session. |
 | `TRUSTED_PROXIES` | IP addresses of the reverse proxies in front of the app (comma separated, CIDR allowed), e.g. `10.0.0.200`. Needed behind a proxy or load balancer, otherwise every visitor has the proxy's IP and shares the same login limits. The proxy must send `X-Forwarded-For` with the visitor's IP. |
 
 ### Roles

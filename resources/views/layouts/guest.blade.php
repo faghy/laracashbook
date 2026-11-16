@@ -28,7 +28,9 @@
                 {{ $slot }}
             </div>
 
-            <x-credits light class="mt-6" />
+            <x-language-switcher light class="mt-6" />
+
+            <x-credits light class="mt-3" />
         </div>
     </body>
 </html>

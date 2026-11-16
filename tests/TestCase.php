@@ -20,5 +20,9 @@ abstract class TestCase extends BaseTestCase
 
         // Gli asset compilati con Vite non servono nei test
         $this->withoutVite();
+
+        // Le richieste di prova di Symfony dicono "browser in inglese": senza preferenza del
+        // browser vale APP_LOCALE. I test sulla lingua del browser impostano l'intestazione.
+        $this->withHeader('Accept-Language', '');
     }
 }

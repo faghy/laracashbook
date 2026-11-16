@@ -32,6 +32,7 @@
             </div>
 
             <div class="hidden lg:flex items-center gap-3">
+                <x-language-switcher light />
                 <a href="{{ route('movimenti.create') }}" class="btn bg-white text-indigo-700 hover:bg-indigo-50 shadow-sm">{{ __('+ New movement') }}</a>
 
                 <x-dropdown align="right" width="48">
@@ -103,6 +104,7 @@
         <div class="px-4 py-3 border-t border-white/15">
             <div class="px-3 font-semibold text-white">{{ Auth::user()?->name }}</div>
             <div class="px-3 text-sm text-indigo-200">{{ Auth::user()?->email }}</div>
+            <x-language-switcher light class="px-3 mt-2" />
 
             <div class="mt-2 flex flex-col gap-1">
                 @can('admin')

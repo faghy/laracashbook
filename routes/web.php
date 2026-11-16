@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\{MovimentoController, CatController, EntityController, DashboardController, UserController};
@@ -22,6 +23,9 @@ Route::get('manual-login', [ProfileController::class, 'getInfo'])
 // Oltre al limite per email (LoginRequest), al massimo 10 tentativi al minuto per indirizzo IP
 Route::post('manual-login', [ProfileController::class, 'manualLogin'])
     ->name('manual.login.post')->middleware(['guest', 'throttle:10,1']);
+
+// Lingua dell'interfaccia (selettore nel menu e nella pagina di accesso), per ospiti e utenti
+Route::post('lingua', [LocaleController::class, 'update'])->name('locale.update')->middleware('throttle:30,1');
 
 // Includi le rotte di autenticazione standard di Laravel (login, register, reset password, etc.)
 require __DIR__.'/auth.php';
